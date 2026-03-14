@@ -1,0 +1,292 @@
+<Window
+    x:Class="ProjectSetup.UI.TransferStandardsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="clr-namespace:ProjectSetup.UI"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Project Standards Browser"
+    Width="860"
+    Height="580"
+    MinWidth="560"
+    MinHeight="420"
+    AllowsTransparency="True"
+    Background="Transparent"
+    WindowStyle="None"
+    MouseMove="Window_MouseMove">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Placeholder — swapped to correct theme in code-behind before first render -->
+                <ResourceDictionary Source="pack://application:,,,/ProjectSetup;component/UI/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ProjectSetup;component/UI/Themes/ElementStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ui:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+            <!-- Section header -->
+            <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#70babc"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Margin" Value="2,0,0,10"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="Transparent" ClipToBounds="True">
+
+        <!-- Outer border (glass/blur chrome, identical to main window) -->
+        <Border
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="2"
+            ClipToBounds="True"
+            CornerRadius="10"
+            Opacity="0.7"
+            SnapsToDevicePixels="True">
+            <Border.Effect>
+                <BlurEffect KernelType="Gaussian" Radius="2" />
+            </Border.Effect>
+        </Border>
+
+        <!-- Main content container -->
+        <Border
+            Margin="2"
+            Background="{DynamicResource PrimaryBackgroundBrush}"
+            ClipToBounds="True"
+            CornerRadius="10">
+
+            <Grid PreviewMouseDown="Window_PreviewMouseDown">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>  <!-- Title bar -->
+                    <RowDefinition Height="*"/>   <!-- Content -->
+                    <RowDefinition Height="28"/>  <!-- Status bar -->
+                </Grid.RowDefinitions>
+
+                <!-- ── Title bar ──────────────────────────────── -->
+                <ui:TitleBar
+                    Grid.Row="0"
+                    IsMinimizeVisible="False"
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    Loaded="TitleBar_Loaded"/>
+
+                <!-- ── Main content ───────────────────────────── -->
+                <Grid Grid.Row="1" Margin="14,10,14,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>  <!-- Header label -->
+                        <RowDefinition Height="Auto"/>  <!-- Source project -->
+                        <RowDefinition Height="8"/>     <!-- Spacer -->
+                        <RowDefinition Height="Auto"/>  <!-- Category + actions -->
+                        <RowDefinition Height="8"/>     <!-- Spacer -->
+                        <RowDefinition Height="*"/>     <!-- DataGrid -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Section header -->
+                    <TextBlock Grid.Row="0"
+                               Style="{StaticResource SectionHeaderStyle}"
+                               Text="BROWSE PROJECT STANDARDS"/>
+
+                    <!-- Source project selector -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="Source Project:"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            FontSize="13"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"/>
+                        <ComboBox
+                            Grid.Column="1"
+                            ItemsSource="{Binding SourceProjects}"
+                            SelectedItem="{Binding SelectedProject}"
+                            Style="{StaticResource DarkThemeComboBox}"
+                            FontSize="13"
+                            Height="32"/>
+                        <Button
+                            Grid.Column="2"
+                            Content="Refresh"
+                            Style="{StaticResource CustomActionButtonStyle}"
+                            Command="{Binding RefreshProjectsCommand}"
+                            Width="72" Height="32"
+                            FontSize="12"
+                            Margin="8,0,0,0"
+                            ToolTip="Reload the list of open Revit documents"/>
+                    </Grid>
+
+                    <!-- Category picker + action buttons -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="Category:"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            FontSize="13"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"/>
+                        <ComboBox
+                            Grid.Column="1"
+                            ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            Style="{StaticResource DarkThemeComboBox}"
+                            FontSize="13"
+                            Height="32"/>
+                        <StackPanel Grid.Column="3" Orientation="Horizontal">
+                            <Button
+                                Content="Select All"
+                                Style="{StaticResource CustomActionButtonStyle}"
+                                Command="{Binding SelectAllCommand}"
+                                Width="90" Height="32"
+                                FontSize="12"
+                                Margin="0,0,6,0"/>
+                            <Button
+                                Content="Clear All"
+                                Style="{StaticResource CustomActionButtonStyle}"
+                                Command="{Binding DeselectAllCommand}"
+                                Width="90" Height="32"
+                                FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- DataGrid wrapped in a styled border -->
+                    <Border Grid.Row="5"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            ClipToBounds="True">
+                        <DataGrid
+                            x:Name="StandardsGrid"
+                            ItemsSource="{Binding Items}"
+                            Background="{DynamicResource PrimaryBackgroundBrush}"
+                            Style="{StaticResource CustomDataGridStyle}"
+                            ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeaderStyle}"
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            CanUserDeleteRows="False"
+                            IsReadOnly="False"
+                            SelectionMode="Single"
+                            SelectionUnit="FullRow"
+                            AlternationCount="2"
+                            RowHeaderWidth="0"
+                            BorderThickness="0"
+                            PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown">
+
+                            <DataGrid.Columns>
+
+                                <!-- Checkbox column -->
+                                <DataGridTemplateColumn
+                                    Width="40"
+                                    Header=""
+                                    CanUserSort="False"
+                                    CanUserResize="False">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox
+                                                IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="#70babc"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Name column -->
+                                <DataGridTextColumn
+                                    Header="Name"
+                                    Binding="{Binding Name}"
+                                    Width="*"
+                                    IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="6,0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Details column -->
+                                <DataGridTextColumn
+                                    Header="Details"
+                                    Binding="{Binding Description}"
+                                    Width="200"
+                                    IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="6,0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <!-- Loading overlay (sits on top of the DataGrid row) -->
+                    <Grid Grid.Row="5"
+                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                          Background="#AA1F1F1F">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ProgressBar
+                                IsIndeterminate="True"
+                                Width="200" Height="4"
+                                Foreground="#70babc"
+                                Background="Transparent"
+                                BorderThickness="0"/>
+                            <TextBlock
+                                Text="Loading…"
+                                HorizontalAlignment="Center"
+                                Foreground="{DynamicResource ForegroundBrush}"
+                                FontSize="13"
+                                Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <!-- ── Status bar ──────────────────────────────── -->
+                <Border
+                    Grid.Row="2"
+                    Background="{DynamicResource SecondaryBackgroundBrush}"
+                    CornerRadius="0,0,9,9"
+                    Padding="12,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding ItemCount, StringFormat='Items: {0}'}"
+                            Foreground="{DynamicResource IconForegroundBrush}"
+                            FontSize="11"
+                            VerticalAlignment="Center"
+                            Margin="0,0,16,0"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="{Binding StatusMessage}"
+                            Foreground="{DynamicResource IconForegroundBrush}"
+                            FontSize="11"
+                            VerticalAlignment="Center"
+                            TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

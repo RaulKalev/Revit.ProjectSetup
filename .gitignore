@@ -1,0 +1,29 @@
+## Visual Studio / .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Temp WPF designer projects
+*_wpftmp.csproj*
+
+## Build outputs
+*.dll
+*.exe
+*.pdb
+*.cache
+
+## Signing / secrets
+*.pfx
+*.snk
+
+## NuGet
+*.nupkg
+packages/
+
+## OS
+Thumbs.db
+.DS_Store
