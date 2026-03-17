@@ -12,6 +12,7 @@ namespace ProjectSetup.UI.ViewModels
     public class CopyElementsViewModel : BaseViewModel
     {
         private readonly RevitExternalEventService _eventService;
+        private readonly System.Windows.Threading.Dispatcher _dispatcher;
 
         // ── Backing stores ────────────────────────────────────────────────────
         private readonly List<FamilyItemDto> _allItems = new List<FamilyItemDto>();
@@ -125,6 +126,7 @@ namespace ProjectSetup.UI.ViewModels
         {
             _eventService = eventService;
             _isDarkMode   = isDarkMode;
+            _dispatcher   = System.Windows.Threading.Dispatcher.CurrentDispatcher;
 
             RefreshProjectsCommand = new RelayCommand(_ => LoadProjects());
             SelectAllCommand       = new RelayCommand(_ => SetAllSelected(true),  _ => FilteredItems.Count > 0);
@@ -141,7 +143,7 @@ namespace ProjectSetup.UI.ViewModels
             StatusMessage = "Fetching open documents…";
             _eventService.Raise(new GetOtherDocumentsRequest(docs =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                _dispatcher.Invoke(() =>
                 {
                     var prev = _selectedProject;
                     SourceProjects.Clear();
@@ -175,7 +177,7 @@ namespace ProjectSetup.UI.ViewModels
 
             _eventService.Raise(new GetFamiliesRequest(sourceTitle, families =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                _dispatcher.Invoke(() =>
                 {
                     foreach (var f in families)
                     {
@@ -258,7 +260,7 @@ namespace ProjectSetup.UI.ViewModels
             // Step 1: check which names already exist in the target doc
             _eventService.Raise(new CheckFamiliesRequest(_selectedProject, toImport, duplicateNames =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                _dispatcher.Invoke(() =>
                 {
                     IsLoading = false;
 
@@ -313,7 +315,7 @@ namespace ProjectSetup.UI.ViewModels
 
                     _eventService.Raise(new CopyFamiliesRequest(_selectedProject, finalIds, importResult =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        _dispatcher.Invoke(() =>
                         {
                             IsLoading = false;
 

@@ -40,6 +40,9 @@ namespace ProjectSetup.UI.ViewModels
         public ICommand ApplyFromTemplateCommand  { get; }
         public ICommand CopyElementsCommand       { get; }
 
+        // ── Levels commands ───────────────────────────────────────────────────
+        public ICommand CreateLevelsCommand { get; }
+
         /// <summary>
         /// Wired up by ProjectSetupWindow to open the Transfer Standards browser window.
         /// </summary>
@@ -49,6 +52,11 @@ namespace ProjectSetup.UI.ViewModels
         /// Wired up by ProjectSetupWindow to open the Copy Elements browser window.
         /// </summary>
         public Action OpenCopyElementsWindowRequest { get; set; }
+
+        /// <summary>
+        /// Wired up by ProjectSetupWindow to open the Create Levels window.
+        /// </summary>
+        public Action OpenCreateLevelsWindowRequest { get; set; }
 
         public MainViewModel(RevitExternalEventService eventService)
         {
@@ -65,6 +73,7 @@ namespace ProjectSetup.UI.ViewModels
             TransferStandardsCommand = new RelayCommand(_ => OpenTransferWindowRequest?.Invoke());
             ApplyFromTemplateCommand  = new RelayCommand(_ => SetStatus("Apply from Template: coming in a future update."), _ => false);
             CopyElementsCommand       = new RelayCommand(_ => OpenCopyElementsWindowRequest?.Invoke());
+            CreateLevelsCommand       = new RelayCommand(_ => OpenCreateLevelsWindowRequest?.Invoke());
         }
 
         private void RaiseRequest(IExternalEventRequest request)

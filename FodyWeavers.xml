@@ -5,6 +5,8 @@
 			Newtonsoft.Json
 			Microsoft.Xaml.Behaviors
 			ricaun.Revit.UI.0.7.1
+			MaterialDesignColors
+			MaterialDesignThemes.Wpf
 		</IncludeAssemblies>
 		<Unmanaged32Assemblies />
 		<Unmanaged64Assemblies />
@@ -12,6 +14,8 @@
 			Newtonsoft.Json
 			Microsoft.Xaml.Behaviors
 			ricaun.Revit.UI.0.7.1
+			MaterialDesignColors
+			MaterialDesignThemes.Wpf
 		</PreloadOrder>
 	</Costura>
 </Weavers>

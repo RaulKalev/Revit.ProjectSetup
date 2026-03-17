@@ -71,6 +71,8 @@ namespace ProjectSetup.Commands
             catch (Exception ex)
             {
                 App.Logger?.Error("Failed to create ProjectSetup window in Idling handler", ex);
+                App.LogCrash("OnRevitIdling", ex);
+                Autodesk.Revit.UI.TaskDialog.Show("ProjectSetup Error", ex.ToString());
             }
         }
     }

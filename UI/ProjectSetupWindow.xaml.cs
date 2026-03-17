@@ -43,6 +43,7 @@ namespace ProjectSetup.UI
             // Wire up window-navigation actions so the ViewModel stays UI-agnostic
             ViewModel.OpenTransferWindowRequest      = OpenTransferStandardsWindow;
             ViewModel.OpenCopyElementsWindowRequest  = OpenCopyElementsWindow;
+            ViewModel.OpenCreateLevelsWindowRequest  = OpenCreateLevelsWindow;
 
             ThemeToggleButton.IsChecked = _isDarkMode;
 
@@ -72,6 +73,12 @@ namespace ProjectSetup.UI
         private void OpenCopyElementsWindow()
         {
             var win = new CopyElementsWindow(_externalEventService, _isDarkMode);
+            win.Show();
+        }
+
+        private void OpenCreateLevelsWindow()
+        {
+            var win = new CreateLevelsWindow(_externalEventService, _isDarkMode);
             win.Show();
         }
 
@@ -109,6 +116,8 @@ namespace ProjectSetup.UI
         // Applied before InitializeComponent so first render uses correct colors
         private static void ApplyThemeToAppResources(bool dark)
         {
+            if (Application.Current == null) return;
+
             Uri uri = dark
                 ? new Uri("pack://application:,,,/ProjectSetup;component/UI/Themes/DarkTheme.xaml")
                 : new Uri("pack://application:,,,/ProjectSetup;component/UI/Themes/LightTheme.xaml");

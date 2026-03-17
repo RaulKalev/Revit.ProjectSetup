@@ -9,6 +9,7 @@ namespace ProjectSetup.UI.ViewModels
     public class TransferStandardsViewModel : BaseViewModel
     {
         private readonly RevitExternalEventService _eventService;
+        private readonly System.Windows.Threading.Dispatcher _dispatcher;
 
         private string _selectedProject;
         private string _selectedCategory;
@@ -65,6 +66,7 @@ namespace ProjectSetup.UI.ViewModels
         public TransferStandardsViewModel(RevitExternalEventService eventService)
         {
             _eventService = eventService;
+            _dispatcher   = System.Windows.Threading.Dispatcher.CurrentDispatcher;
 
             SourceProjects = new ObservableCollection<string>();
 
@@ -94,7 +96,7 @@ namespace ProjectSetup.UI.ViewModels
             StatusMessage = "Fetching open documents…";
             _eventService.Raise(new GetOpenDocumentsRequest(docs =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                _dispatcher.Invoke(() =>
                 {
                     var prev = _selectedProject;
                     SourceProjects.Clear();
@@ -129,7 +131,7 @@ namespace ProjectSetup.UI.ViewModels
 
             _eventService.Raise(new GetStandardsItemsRequest(category, _selectedProject, items =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                _dispatcher.Invoke(() =>
                 {
                     Items.Clear();
                     foreach (var item in items)
