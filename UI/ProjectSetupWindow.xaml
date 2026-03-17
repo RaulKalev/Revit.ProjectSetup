@@ -440,6 +440,31 @@
                                     </Grid>
                                 </Border>
 
+                                <!-- Copy Families from another project -->
+                                <Border Style="{StaticResource ActionCardStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <materialDesign:PackIcon Grid.Column="0"
+                                            Kind="FamilyTree"
+                                            Width="24" Height="24"
+                                            VerticalAlignment="Center"
+                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Copy Families"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Browse families from another open project and import selected ones into the active document."/>
+                                        </StackPanel>
+                                        <Button Grid.Column="2" Content="Open" Width="72"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource CustomActionButtonStyle}"
+                                            Command="{Binding CopyElementsCommand}"/>
+                                    </Grid>
+                                </Border>
+
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>

@@ -125,6 +125,30 @@ namespace ProjectSetup.Services.Revit
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    //  Get Other Documents — all non-family open docs except the active one
+    //  (used when the active document is the import target)
+    // ─────────────────────────────────────────────────────────────────────────
+    public class GetOtherDocumentsRequest : IExternalEventRequest
+    {
+        private readonly Action<List<string>> _onComplete;
+        public GetOtherDocumentsRequest(Action<List<string>> onComplete) => _onComplete = onComplete;
+
+        public void Execute(UIApplication app)
+        {
+            var activeTitle = app.ActiveUIDocument?.Document?.Title;
+            var docs = new List<string>();
+            try
+            {
+                foreach (Document doc in app.Application.Documents)
+                    if (!doc.IsFamilyDocument && doc.Title != activeTitle)
+                        docs.Add(doc.Title);
+            }
+            catch { /* return what we have */ }
+            _onComplete?.Invoke(docs);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     //  Transfer Project Standards
     // ─────────────────────────────────────────────────────────────────────────
     public class TransferStandardsRequest : IExternalEventRequest

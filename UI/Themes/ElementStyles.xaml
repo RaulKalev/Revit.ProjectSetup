@@ -471,7 +471,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="4">
-                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" />
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <!--  Change border color on mouse over  -->
@@ -758,6 +758,11 @@
                         <!--  Checked State  -->
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="CheckboxIcon" Property="Kind" Value="CheckboxMarkedOutline" />
+                            <Setter TargetName="CheckboxIcon" Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+                        </Trigger>
+                        <!--  Indeterminate State (header some selected)  -->
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="CheckboxIcon" Property="Kind" Value="MinusBoxOutline" />
                             <Setter TargetName="CheckboxIcon" Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

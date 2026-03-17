@@ -38,11 +38,17 @@ namespace ProjectSetup.UI.ViewModels
         // ── Transfer Standards commands ───────────────────────────────────────
         public ICommand TransferStandardsCommand { get; }
         public ICommand ApplyFromTemplateCommand  { get; }
+        public ICommand CopyElementsCommand       { get; }
 
         /// <summary>
         /// Wired up by ProjectSetupWindow to open the Transfer Standards browser window.
         /// </summary>
-        public Action OpenTransferWindowRequest { get; set; }
+        public Action OpenTransferWindowRequest      { get; set; }
+
+        /// <summary>
+        /// Wired up by ProjectSetupWindow to open the Copy Elements browser window.
+        /// </summary>
+        public Action OpenCopyElementsWindowRequest { get; set; }
 
         public MainViewModel(RevitExternalEventService eventService)
         {
@@ -58,6 +64,7 @@ namespace ProjectSetup.UI.ViewModels
 
             TransferStandardsCommand = new RelayCommand(_ => OpenTransferWindowRequest?.Invoke());
             ApplyFromTemplateCommand  = new RelayCommand(_ => SetStatus("Apply from Template: coming in a future update."), _ => false);
+            CopyElementsCommand       = new RelayCommand(_ => OpenCopyElementsWindowRequest?.Invoke());
         }
 
         private void RaiseRequest(IExternalEventRequest request)

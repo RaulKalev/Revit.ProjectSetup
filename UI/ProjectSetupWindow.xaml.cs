@@ -40,8 +40,9 @@ namespace ProjectSetup.UI
             ViewModel = new MainViewModel(externalEventService);
             DataContext = ViewModel;
 
-            // Wire up window-navigation action so the ViewModel stays UI-agnostic
-            ViewModel.OpenTransferWindowRequest = OpenTransferStandardsWindow;
+            // Wire up window-navigation actions so the ViewModel stays UI-agnostic
+            ViewModel.OpenTransferWindowRequest      = OpenTransferStandardsWindow;
+            ViewModel.OpenCopyElementsWindowRequest  = OpenCopyElementsWindow;
 
             ThemeToggleButton.IsChecked = _isDarkMode;
 
@@ -65,6 +66,12 @@ namespace ProjectSetup.UI
         private void OpenTransferStandardsWindow()
         {
             var win = new TransferStandardsWindow(_externalEventService, _isDarkMode);
+            win.Show();
+        }
+
+        private void OpenCopyElementsWindow()
+        {
+            var win = new CopyElementsWindow(_externalEventService, _isDarkMode);
             win.Show();
         }
 
