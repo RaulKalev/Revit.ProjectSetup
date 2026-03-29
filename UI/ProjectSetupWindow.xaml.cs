@@ -109,6 +109,7 @@ namespace ProjectSetup.UI
         private void OpenLinkIfcWindow(List<string> paths)
         {
             var win = new LinkIfcWindow(paths, _externalEventService, _isDarkMode);
+            win.Topmost = true;
             win.Show();
         }
 

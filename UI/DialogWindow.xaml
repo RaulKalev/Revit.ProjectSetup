@@ -28,6 +28,7 @@
             <!-- Default button style (ghost) -->
             <Style x:Key="DialogButtonStyle" TargetType="Button" BasedOn="{StaticResource CustomActionButtonStyle}">
                 <Setter Property="Width"    Value="Auto"/>
+                <Setter Property="MinWidth" Value="80"/>
                 <Setter Property="Height"   Value="30"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Padding"  Value="12,0"/>

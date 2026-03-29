@@ -62,6 +62,7 @@ namespace ProjectSetup.UI
             // Subscribe after building so the lambda captures dlg
             vm.CloseRequested += _ => dlg.Close();
 
+            dlg.Topmost = true;
             dlg.ShowDialog();
             return vm.ChosenResult;
         }

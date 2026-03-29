@@ -22,7 +22,7 @@ namespace ProjectSetup.UI
                 SwapTheme(false);
 
             ViewModel                   = new LinkIfcViewModel(paths, eventService, isDarkMode);
-            ViewModel.OnLinkComplete    = () => { Activate(); Topmost = true; Topmost = false; };
+            ViewModel.OnLinkComplete    = () => Close();
             ViewModel.GetOwnerWindow    = () => this;
             DataContext                 = ViewModel;
 
