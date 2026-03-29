@@ -142,24 +142,25 @@ namespace ProjectSetup.Services.Revit
                             {
                                 newView.ViewTemplateId = templateId;
 
-                                // Turn off each Revit link's V/G visibility checkbox in the template (once per template)
+                                // Uncheck each Revit link row in the template's V/G → Revit Links tab (once per template).
+                                // RevitLinkType IDs must be used (not instance IDs) — that is what controls the checkbox.
                                 if (!modifiedTemplates.Contains(templateId))
                                 {
                                     var templateView = doc.GetElement(templateId) as View;
-                                    if (templateView != null)
+                                    if (templateView != null && revitLinkTypeIds.Count > 0)
                                     {
-                                        int hiddenCount = 0;
-                                        foreach (var typeId in revitLinkTypeIds)
-                                        {
-                                            if (templateView.CanCategoryBeHidden(typeId) &&
-                                                !templateView.GetCategoryHidden(typeId))
+                                        var toHide = revitLinkTypeIds
+                                            .Where(id =>
                                             {
-                                                templateView.SetCategoryHidden(typeId, true);
-                                                hiddenCount++;
-                                            }
+                                                var e = doc.GetElement(id);
+                                                return e != null && !e.IsHidden(templateView);
+                                            })
+                                            .ToList();
+                                        if (toHide.Count > 0)
+                                        {
+                                            templateView.HideElements(toHide);
+                                            result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': {toHide.Count} Revit link(i) peidetud");
                                         }
-                                        if (hiddenCount > 0)
-                                            result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': {hiddenCount} Revit link(i) peidetud");
                                     }
                                     modifiedTemplates.Add(templateId);
                                 }
