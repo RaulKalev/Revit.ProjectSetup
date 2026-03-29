@@ -40,13 +40,17 @@ namespace ProjectSetup.Services.Revit
             var result = new LinkDwgResult();
             try
             {
-                var doc = app.ActiveUIDocument?.Document;
+                var uidoc = app.ActiveUIDocument;
+                var doc   = uidoc?.Document;
                 if (doc == null)
                 {
                     result.ErrorMessage = "Aktiivset dokumenti ei leitud.";
                     _onComplete?.Invoke(result);
                     return;
                 }
+
+                // Remember the original active view so we can restore it afterwards.
+                var originalView = uidoc.ActiveView;
 
                 var options = new DWGImportOptions
                 {
@@ -71,6 +75,12 @@ namespace ProjectSetup.Services.Revit
                             result.Failed.Add((displayName, "Vaade ei leitud."));
                             continue;
                         }
+
+                        // Switch the active view to the target floor plan before linking.
+                        // Revit requires the target view to be active for "current view only"
+                        // to take effect — passing the view parameter alone is not sufficient.
+                        if (uidoc.ActiveView?.Id != targetView.Id)
+                            uidoc.ActiveView = targetView;
 
                         using var tx = new Transaction(doc, $"Link DWG: {displayName}");
                         tx.Start();
@@ -97,6 +107,11 @@ namespace ProjectSetup.Services.Revit
                 }
 
                 tg.Assimilate();
+
+                // Restore the original active view (best-effort).
+                try { if (originalView != null) uidoc.ActiveView = originalView; }
+                catch { /* ignore if the original view is no longer valid */ }
+
                 _onComplete?.Invoke(result);
             }
             catch (Exception ex)
