@@ -91,12 +91,8 @@ namespace ProjectSetup.Services.Revit
                     .Where(v => v.IsTemplate)
                     .ToDictionary(v => v.Name, v => v.Id, StringComparer.OrdinalIgnoreCase);
 
-                // Pre-collect Revit link instances to hide in view templates
-                var revitLinkIds = new FilteredElementCollector(doc)
-                    .OfClass(typeof(RevitLinkInstance))
-                    .ToElementIds()
-                    .ToList();
                 var modifiedTemplates = new HashSet<ElementId>();
+                var rvtLinksCatId = new ElementId(BuiltInCategory.OST_RvtLinks);
 
                 using var tg = new TransactionGroup(doc, "Create Plan Sets");
                 tg.Start();
@@ -139,24 +135,20 @@ namespace ProjectSetup.Services.Revit
                             {
                                 newView.ViewTemplateId = templateId;
 
-                                // Modify the view template to hide all linked Revit models (once per template)
-                                if (revitLinkIds.Count > 0 && !modifiedTemplates.Contains(templateId))
+                                // Turn off the Revit Links category visibility in the template (once per template)
+                                if (!modifiedTemplates.Contains(templateId))
                                 {
                                     var templateView = doc.GetElement(templateId) as View;
-                                    if (templateView != null)
+                                    if (templateView != null && !templateView.GetCategoryHidden(rvtLinksCatId))
                                     {
-                                        var toHide = revitLinkIds
-                                            .Where(id => { var e = doc.GetElement(id); return e != null && !e.IsHidden(templateView); })
-                                            .ToList();
-                                        if (toHide.Count > 0)
-                                            templateView.HideElements(toHide);
-                                        modifiedTemplates.Add(templateId);
-                                        result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': lingitud mudelid peidetud");
+                                        templateView.SetCategoryHidden(rvtLinksCatId, true);
+                                        result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': Revit Links kategooria peidetud");
                                     }
+                                    modifiedTemplates.Add(templateId);
                                 }
                             }
                             else
-                                result.Messages.Add($"   ↳ Hoiatus: vaate malli '{category.ViewTemplateName}' ei leitud");
+                                result.Messages.Add($"   \u2193 Hoiatus: vaate malli '{category.ViewTemplateName}' ei leitud");
 
                             tx.Commit();
 
