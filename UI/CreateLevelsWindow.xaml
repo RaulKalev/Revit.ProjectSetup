@@ -5,7 +5,7 @@
     xmlns:ui="clr-namespace:ProjectSetup.UI"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Create Levels from Link"
+    Title="Loo tasandid lingist"
     Width="680"
     Height="500"
     MinWidth="500"
@@ -86,7 +86,7 @@
                     <!-- Section header -->
                     <TextBlock Grid.Row="0"
                                Style="{StaticResource SectionHeaderStyle}"
-                               Text="CREATE LEVELS FROM LINKED MODEL"/>
+                               Text="LOO TASANDID LINGITUD MUDELIST"/>
 
                     <!-- Link selector -->
                     <Grid Grid.Row="1">
@@ -97,7 +97,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="Linked Model:"
+                            Text="Lingitud mudel:"
                             Foreground="{DynamicResource ForegroundBrush}"
                             FontSize="13"
                             VerticalAlignment="Center"
@@ -111,13 +111,13 @@
                             Height="32"/>
                         <Button
                             Grid.Column="2"
-                            Content="Refresh"
+                            Content="Uuenda"
                             Style="{StaticResource CustomActionButtonStyle}"
                             Command="{Binding RefreshLinksCommand}"
                             Width="72" Height="32"
                             FontSize="12"
                             Margin="8,0,0,0"
-                            ToolTip="Reload the list of linked models"/>
+                            ToolTip="Uuenda lingitud mudelite nimekirja"/>
                     </Grid>
 
                     <!-- Preview data grid -->
@@ -146,21 +146,21 @@
 
                                 <!-- Level name -->
                                 <DataGridTextColumn
-                                    Header="Level Name"
+                                    Header="Tasandi nimi"
                                     Binding="{Binding Name}"
                                     Width="*"
                                     CellStyle="{StaticResource CustomDataGridCellStyle}"/>
 
                                 <!-- Elevation -->
                                 <DataGridTextColumn
-                                    Header="Elevation"
+                                    Header="Kõrgus"
                                     Binding="{Binding ElevationDisplay}"
                                     Width="110"
                                     CellStyle="{StaticResource CustomDataGridCellStyle}"/>
 
                                 <!-- Action -->
                                 <DataGridTemplateColumn
-                                    Header="Action"
+                                    Header="Toiming"
                                     Width="150"
                                     CanUserSort="False">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -175,13 +175,13 @@
                                                     <Style TargetType="Border">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Rename existing">
+                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Nimeta ümber">
                                                                 <Setter Property="Background" Value="#22448866"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Create new">
+                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Loo uus">
                                                                 <Setter Property="Background" Value="#22307ab8"/>
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Delete">
+                                                            <DataTrigger Binding="{Binding ActionDisplay}" Value="Kustuta">
                                                                 <Setter Property="Background" Value="#22884444"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -195,13 +195,13 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Rename existing">
+                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Nimeta ümber">
                                                                     <Setter Property="Foreground" Value="#88dd88"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Create new">
+                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Loo uus">
                                                                     <Setter Property="Foreground" Value="#88aaff"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Delete">
+                                                                <DataTrigger Binding="{Binding ActionDisplay}" Value="Kustuta">
                                                                     <Setter Property="Foreground" Value="#ff8888"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -220,7 +220,7 @@
                     <!-- Apply button -->
                     <Button
                         Grid.Row="5"
-                        Content="Apply Levels"
+                        Content="Rakenda"
                         Style="{StaticResource CustomActionButtonStyle}"
                         Command="{Binding ApplyCommand}"
                         Width="120" Height="34"

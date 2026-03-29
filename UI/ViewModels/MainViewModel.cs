@@ -65,7 +65,8 @@ namespace ProjectSetup.UI.ViewModels
 
         // ── Base Views commands ───────────────────────────────────────────────
         public ICommand CreateBaseViewsCommand { get; }
-
+        // ── Combined: create levels then base views ───────────────────────────
+        public ICommand CreateLevelsAndViewsCommand { get; }
         // ── IFC Linking commands ──────────────────────────────────────────────
         public ICommand LinkIfcFilesCommand { get; }
 
@@ -75,6 +76,9 @@ namespace ProjectSetup.UI.ViewModels
         // ── Plan Sets commands ────────────────────────────────────────────────
         public ICommand CreatePlanSetsCommand { get; }
 
+        // ── Reeper commands ───────────────────────────────────────────────────
+        public ICommand PlaceReeperCommand { get; }
+
         // ── Step progress toggle ──────────────────────────────────────────────
         public ICommand ToggleStepDoneCommand { get; }
 
@@ -82,10 +86,12 @@ namespace ProjectSetup.UI.ViewModels
         public Action OpenTransferWindowRequest          { get; set; }
         public Action OpenCopyElementsWindowRequest      { get; set; }
         public Action OpenCreateLevelsWindowRequest      { get; set; }
+        public Action<Action> OpenCreateLevelsWindowAndThenRequest { get; set; }
         public Func<string> RequestFolderPick            { get; set; }
         public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
         public Action<List<string>> OpenLinkDwgWindowRequest { get; set; }
-        public Action OpenCreatePlanSetsWindowRequest { get; set; }
+        public Action OpenCreatePlanSetsWindowRequest      { get; set; }
+        public Action<Action> OpenPlaceReeperWindowRequest  { get; set; }
         /// <summary>Returns a save-file path chosen by the user, or null if cancelled.</summary>
         public Func<string> RequestSaveFilePick          { get; set; }
 
@@ -120,9 +126,15 @@ namespace ProjectSetup.UI.ViewModels
 
             CreateBaseViewsCommand = new RelayCommand(_ => ExecuteCreateBaseViews());
 
+            CreateLevelsAndViewsCommand = new RelayCommand(_ =>
+            {
+                OpenCreateLevelsWindowAndThenRequest?.Invoke(() => ExecuteCreateBaseViews());
+            });
+
             LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
             LinkDwgFilesCommand  = new RelayCommand(_ => PickFolderAndLinkDwg());
             CreatePlanSetsCommand = new RelayCommand(_ => OpenPlanSetsAndMark());
+            PlaceReeperCommand    = new RelayCommand(_ => OpenPlaceReeperWindowRequest?.Invoke(() => MarkStepDone(9)));
 
             ToggleStepDoneCommand = new RelayCommand(p =>
             {

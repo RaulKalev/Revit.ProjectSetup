@@ -310,7 +310,7 @@
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Style="{StaticResource ActionTitleStyle}" Text="2. Mudelite linkimine (Link IFC)"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Lingi IFC failid aktiivsesse projekti. Iga lingitud mudel kinnistatakse automaatselt. Kontrolli, et lingitud mudelid on lukus (Pinned)."/>
+                                                Text="Vali kaust kus asuvad IFC mudelid EULE projektipangas.&#x0a;Lingi IFC failid aktiivsesse projekti. Iga lingitud mudel kinnistatakse automaatselt."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Button Content="Run" Width="72" Margin="0,0,6,0"
@@ -331,68 +331,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 3: Create Levels ═══ -->
-                                <Border>
-                                    <Border.Style>
-                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsStep5Done}" Value="True">
-                                                    <Setter Property="Background" Value="#0A4CAF50"/>
-                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0">
-                                            <Border.Style>
-                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsStep5Done}" Value="True">
-                                                            <Setter Property="Background" Value="#FF4CAF50"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <Grid>
-                                                <TextBlock Text="3" FontSize="12" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep5Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep5Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            </Grid>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="3. Tasandite (Levels) seadistamine"/>
-                                            <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Kopeeri vajalikud Levelid olemasolevast Levelist. Nimeta Levelid ja määra kõrgused vastavalt BIM rakenduskavale."/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Content="Open" Width="72" Margin="0,0,6,0"
-                                                    Style="{StaticResource CustomActionButtonStyle}"
-                                                    Command="{Binding CreateLevelsCommand}"/>
-                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
-                                                    Style="{StaticResource CustomActionButtonStyle}"
-                                                    Command="{Binding ToggleStepDoneCommand}">
-                                                <Button.CommandParameter><sys:Int32>5</sys:Int32></Button.CommandParameter>
-                                                <Grid>
-                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
-                                                        Visibility="{Binding IsStep5Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
-                                                        Visibility="{Binding IsStep5Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                                </Grid>
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <!-- ═══ Step 4: Create Views ═══ -->
+                                <!-- ═══ Step 3: Tasandid + Baas vaated ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -421,7 +360,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="4" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="3" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep6Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -430,14 +369,14 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="4. Baas vaadete loomine"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="3. Tasandid ja baasvaadete loomine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Loob Floor Plan vaated k&#x00F5;ikidele tasanditele. Nimetab vaated kujul 00_Level Name ja m&#x00E4;&#x00E4;rab Kaust 1 = Baas plaanid."/>
+                                                Text="Kopeeri vajalikud Levelid olemasolevast mudelist.&#x0a;Loob Vaated k&#x00F5;ikidest tasanditest."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Button Content="Run" Width="72" Margin="0,0,6,0"
                                                     Style="{StaticResource CustomActionButtonStyle}"
-                                                    Command="{Binding CreateBaseViewsCommand}"/>
+                                                    Command="{Binding CreateLevelsAndViewsCommand}"/>
                                             <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
                                                     Style="{StaticResource CustomActionButtonStyle}"
                                                     Command="{Binding ToggleStepDoneCommand}">
@@ -482,7 +421,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="5" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="4" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep7Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -491,7 +430,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="5. DWG lisamine vaadetele"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="4. DWG lisamine vaadetele"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Vali kaust, kus asuvad DWG failid. Failid lingitakse automaatselt vastavatele Floor Plan vaadetele ja kinnistatakse."/>
                                         </StackPanel>
@@ -543,7 +482,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="6" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="5" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep11Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -552,7 +491,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Plaanide loomine"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="5. Plaanide loomine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Loo koosteplaanid EL/EN kategooriate alusel. Plaanid luuakse baasplaanide põhjal."/>
                                         </StackPanel>
@@ -604,7 +543,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="7" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="6" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep9Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -613,14 +552,14 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. Paigalda Reeper"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Paigalda Reeper"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Paigalda reeper lähtudes teiste eriosade reeperite asukohtadest või BIM rakenduskavas kirjeldatud kohta. Tavaliselt telgede A ja 0 ristumiskoht."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
-                                                    ToolTip="Coming soon"
-                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding PlaceReeperCommand}"/>
                                             <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
                                                     Style="{StaticResource CustomActionButtonStyle}"
                                                     Command="{Binding ToggleStepDoneCommand}">

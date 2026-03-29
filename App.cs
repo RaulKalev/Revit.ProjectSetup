@@ -30,10 +30,15 @@ namespace ProjectSetup
             string tabName = "RK Tools";
             try { application.CreateRibbonTab(tabName); } catch { }
 
+            bool isDark = UIThemeManager.CurrentTheme == UITheme.Dark;
+            string iconUri = isDark
+                ? "pack://application:,,,/ProjectSetup;component/Assets/Dark%20-%20Project%20Setup.tiff"
+                : "pack://application:,,,/ProjectSetup;component/Assets/Light%20-%20Project%20Setup.tiff";
+
             ribbonPanel = application.CreateOrSelectPanel(tabName, "Project");
             ribbonPanel.CreatePushButton<ProjectSetupCommand>()
-                .SetLargeImage("pack://application:,,,/ProjectSetup;component/Assets/ProjectSetup.tiff")
-                .SetText("Project Setup")
+                .SetLargeImage(iconUri)
+                .SetText("Project\nSetup")
                 .SetToolTip("Set up and maintain Revit projects.")
                 .SetLongDescription("Project Setup provides tools for project configuration, maintenance, and transferring project standards.");
 

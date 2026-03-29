@@ -30,6 +30,37 @@ Batch-link external IFC models into the active Revit project:
 - Each linked model is automatically **pinned** after placement
 - Summary dialog reports success / failure for every file
 
+### Link DWG Files
+Batch-link DWG drawings into the active Revit project:
+
+- Pick a folder containing `.dwg` files
+- Preview all discovered files with checkbox selection
+- Links placed on the current view; Revit link V/G overrides hidden after linking
+
+### Create Levels & Base Views
+Two-step workflow in a single dialog:
+
+- Define levels with name, elevation, and floor-plan creation toggle
+- Base views (floor plans, reflected ceiling plans, sections) are created automatically after levels are confirmed
+- Window closes automatically on successful apply
+
+### Create Plan Sets
+Batch-create sheet plan sets per discipline category:
+
+- Select EL (Elektripaigaldis) and/or EN (Nõrkvool) categories
+- Collapsible group cards per discipline
+- Creates floor-plan sheets with pre-configured view templates
+
+### Paigalda Reeper (Place Benchmark)
+Locate and place a benchmark (`xx_REEPER_v01`) aligned to the reeper in a linked model:
+
+- Searches **all loaded linked models** for generic model elements (including DirectShapes) whose name or family name contains "reeper"
+- Results shown in a DataGrid: linked model name, element name/type, and `X,Y,Z` size
+- Select **EL** or **EN** discipline — places `EL_REEPER_v01` or `EN_REEPER_v01` type
+- Placed at the exact world corner location of the source element
+- `X,Y,Z` type parameter set to match the source element's size
+- Shows an error dialog if the `xx_REEPER_v01` family is not loaded
+
 ### Transfer Standards
 Browse and inspect standards from any open Revit document:
 
@@ -40,8 +71,15 @@ Browse and inspect standards from any open Revit document:
 
 ---
 
+## Step Progress Tracking
+
+Each workflow step has a **tick button** to mark it done. Progress is persisted via Revit Extensible Storage and restored on next open. Steps also turn green automatically when the corresponding action completes successfully.
+
+---
+
 ## UI
 - Dark / light theme toggle (persisted between sessions)
+- Theme-aware ribbon icon (dark and light TIFF variants)
 - Custom frameless window with glass border effect and resize support
 - MaterialDesignThemes 5.x styling throughout
 
@@ -61,6 +99,9 @@ Browse and inspect standards from any open Revit document:
 ```bash
 # Both targets
 dotnet build
+
+# Release
+dotnet build --configuration Release
 
 # Single target
 dotnet build -f net48
@@ -85,21 +126,30 @@ The Release build automatically code-signs the output assembly if `signtool.exe`
 
 ```
 ProjectSetup/
-├── App.cs                        # IExternalApplication — ribbon registration
+├── App.cs                            # IExternalApplication — ribbon registration
 ├── Commands/
-│   └── ProjectSetupCommand.cs    # IExternalCommand — opens main window
-├── Models/                       # DTOs (SettingsModel, StandardsItemDto, IfcFileItemDto, …)
+│   └── ProjectSetupCommand.cs        # IExternalCommand — opens main window
+├── Models/                           # DTOs (SettingsModel, ReeperItemDto, …)
 ├── Services/
-│   ├── Core/                     # SessionLogger, ILogger
-│   ├── Revit/                    # External event requests (LinkIfcFilesRequest, …)
-│   └── SettingsService.cs        # JSON settings persistence
+│   ├── Core/                         # SessionLogger, ILogger
+│   ├── Revit/                        # External event requests
+│   │   ├── FindReeperInLinksRequest.cs
+│   │   ├── PlaceReeperRequest.cs
+│   │   ├── LinkDwgFilesRequest.cs
+│   │   ├── CreatePlanSetsRequest.cs
+│   │   └── …
+│   └── SettingsService.cs            # JSON settings persistence
 └── UI/
-    ├── Themes/                   # DarkTheme, LightTheme, ElementStyles
-    ├── ViewModels/               # MainViewModel, LinkIfcViewModel, TransferStandardsViewModel
-    ├── ProjectSetupWindow.xaml   # Main three-tab window
-    ├── LinkIfcWindow.xaml        # IFC file selection & linking window
+    ├── Themes/                       # DarkTheme, LightTheme, ElementStyles
+    ├── ViewModels/                   # MainViewModel, PlaceReeperViewModel, …
+    ├── ProjectSetupWindow.xaml       # Main window
+    ├── PlaceReeperWindow.xaml        # Reeper search & placement window
+    ├── CreateLevelsWindow.xaml       # Level + base view creation window
+    ├── CreatePlanSetsWindow.xaml     # Plan set creation window
+    ├── LinkDwgWindow.xaml            # DWG linking window
+    ├── LinkIfcWindow.xaml            # IFC linking window
     ├── TransferStandardsWindow.xaml
-    └── TitleBar.xaml             # Custom title bar user control
+    └── TitleBar.xaml                 # Custom title bar user control
 ```
 
 ---

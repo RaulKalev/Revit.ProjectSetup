@@ -13,7 +13,7 @@ namespace ProjectSetup.UI.ViewModels
 
         private string _selectedLink;
         private bool   _isLoading;
-        private string _statusMessage = "Select a linked model to preview the levels.";
+        private string _statusMessage = "Vali lingitud mudel tasandite eelvaatamiseks.";
 
         public ObservableCollection<string>          LinkedModels  { get; } = new ObservableCollection<string>();
         public ObservableCollection<LevelPreviewDto> PreviewItems  { get; } = new ObservableCollection<LevelPreviewDto>();
@@ -44,6 +44,7 @@ namespace ProjectSetup.UI.ViewModels
 
         public ICommand RefreshLinksCommand { get; }
         public ICommand ApplyCommand        { get; }
+        public Action   CloseWindowRequest  { get; set; }
 
         public CreateLevelsViewModel(RevitExternalEventService eventService)
         {
@@ -59,7 +60,7 @@ namespace ProjectSetup.UI.ViewModels
         private void LoadLinks()
         {
             IsLoading     = true;
-            StatusMessage = "Fetching linked models…";
+            StatusMessage = "Laadin lingitud mudeleid…";
 
             _eventService.Raise(new GetLinkedModelsRequest(links =>
             {
@@ -77,7 +78,7 @@ namespace ProjectSetup.UI.ViewModels
                     {
                         PreviewItems.Clear();
                         IsLoading     = false;
-                        StatusMessage = "No linked models found in the active document.";
+                        StatusMessage = "Aktiivsest dokumendist ei leitud lingitud mudeleid.";
                         OnPropertyChanged(nameof(CanApply));
                     }
                 });
@@ -87,7 +88,7 @@ namespace ProjectSetup.UI.ViewModels
         private void LoadPreview(string linkTitle)
         {
             IsLoading     = true;
-            StatusMessage = $"Reading levels from '{linkTitle}'…";
+            StatusMessage = $"Loen tasandeid mudelist '{linkTitle}'…";
             PreviewItems.Clear();
             OnPropertyChanged(nameof(CanApply));
 
@@ -101,8 +102,8 @@ namespace ProjectSetup.UI.ViewModels
 
                     IsLoading = false;
                     StatusMessage = PreviewItems.Count > 0
-                        ? $"{PreviewItems.Count} level{(PreviewItems.Count == 1 ? "" : "s")} found — review and click Apply."
-                        : "No levels found in the linked model.";
+                        ? $"{PreviewItems.Count} tasandit leitud — kontrolli ja vajuta Rakenda."
+                        : "Lingitud mudelist ei leitud tasandeid.";
 
                     OnPropertyChanged(nameof(CanApply));
                 });
@@ -114,7 +115,7 @@ namespace ProjectSetup.UI.ViewModels
             if (_selectedLink == null) return;
 
             IsLoading     = true;
-            StatusMessage = "Applying levels…";
+            StatusMessage = "Rakendan tasandeid…";
             OnPropertyChanged(nameof(CanApply));
 
             _eventService.Raise(new CreateLevelsRequest(_selectedLink, res =>
@@ -125,23 +126,22 @@ namespace ProjectSetup.UI.ViewModels
 
                     if (res.ErrorMessage != null)
                     {
-                        StatusMessage = $"Error: {res.ErrorMessage}";
+                        StatusMessage = $"Viga: {res.ErrorMessage}";
                         OnPropertyChanged(nameof(CanApply));
                         return;
                     }
 
                     var parts = new System.Collections.Generic.List<string>();
-                    if (res.Renamed > 0) parts.Add($"{res.Renamed} renamed");
-                    if (res.Created > 0) parts.Add($"{res.Created} created");
-                    if (res.Deleted > 0) parts.Add($"{res.Deleted} deleted");
-                    if (res.Skipped > 0) parts.Add($"{res.Skipped} could not be deleted");
+                    if (res.Renamed > 0) parts.Add($"{res.Renamed} nimetati ümber");
+                    if (res.Created > 0) parts.Add($"{res.Created} loodud");
+                    if (res.Deleted > 0) parts.Add($"{res.Deleted} kustutatud");
+                    if (res.Skipped > 0) parts.Add($"{res.Skipped} ei saanud kustutada");
 
                     StatusMessage = parts.Count > 0
-                        ? "Done — " + string.Join(", ", parts) + "."
-                        : "Done.";
+                        ? "Valmis — " + string.Join(", ", parts) + "."
+                        : "Valmis.";
 
-                    // Reload preview to reflect the new state
-                    LoadPreview(_selectedLink);
+                    CloseWindowRequest?.Invoke();
                 });
             }));
         }

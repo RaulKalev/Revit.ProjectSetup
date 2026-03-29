@@ -45,10 +45,12 @@ namespace ProjectSetup.UI
             ViewModel.OpenTransferWindowRequest      = OpenTransferStandardsWindow;
             ViewModel.OpenCopyElementsWindowRequest  = OpenCopyElementsWindow;
             ViewModel.OpenCreateLevelsWindowRequest  = OpenCreateLevelsWindow;
+            ViewModel.OpenCreateLevelsWindowAndThenRequest = OpenCreateLevelsWindowAndThen;
             ViewModel.RequestFolderPick              = PickFolder;
             ViewModel.OpenLinkIfcWindowRequest       = OpenLinkIfcWindow;
             ViewModel.OpenLinkDwgWindowRequest       = OpenLinkDwgWindow;
             ViewModel.OpenCreatePlanSetsWindowRequest = OpenCreatePlanSetsWindow;
+            ViewModel.OpenPlaceReeperWindowRequest    = OpenPlaceReeperWindow;
             ViewModel.RequestSaveFilePick            = PickSaveFilePath;
             ViewModel.GetOwnerWindow                 = () => this;
             ViewModel.IsDarkMode                     = _isDarkMode;
@@ -90,6 +92,13 @@ namespace ProjectSetup.UI
             win.Show();
         }
 
+        private void OpenCreateLevelsWindowAndThen(Action onClosed)
+        {
+            var win = new CreateLevelsWindow(_externalEventService, _isDarkMode);
+            win.Closed += (s, e) => onClosed?.Invoke();
+            win.Show();
+        }
+
         private string PickFolder()
         {
 #if NET8_0_OR_GREATER
@@ -127,6 +136,14 @@ namespace ProjectSetup.UI
         private void OpenCreatePlanSetsWindow()
         {
             var win = new CreatePlanSetsWindow(_externalEventService, _isDarkMode);
+            win.Topmost = true;
+            win.Show();
+        }
+
+        private void OpenPlaceReeperWindow(Action onSuccess)
+        {
+            var win = new PlaceReeperWindow(_externalEventService, _isDarkMode);
+            win.ViewModel.OnPlaceComplete = () => { win.Close(); onSuccess?.Invoke(); };
             win.Topmost = true;
             win.Show();
         }

@@ -6,22 +6,23 @@ using System.Windows.Input;
 
 namespace ProjectSetup.UI
 {
-    public partial class CreateLevelsWindow : Window
+    public partial class PlaceReeperWindow : Window
     {
         private readonly WindowResizer _windowResizer;
 
-        public CreateLevelsViewModel ViewModel { get; private set; }
+        public PlaceReeperViewModel ViewModel { get; private set; }
 
-        public CreateLevelsWindow(RevitExternalEventService eventService, bool isDarkMode)
+        public PlaceReeperWindow(RevitExternalEventService eventService, bool isDarkMode)
         {
             InitializeComponent();
 
             if (!isDarkMode)
                 SwapTheme(false);
 
-            ViewModel   = new CreateLevelsViewModel(eventService);
-            ViewModel.CloseWindowRequest = () => Close();
-            DataContext = ViewModel;
+            ViewModel                  = new PlaceReeperViewModel(eventService, isDarkMode);
+            ViewModel.OnPlaceComplete  = () => Close();
+            ViewModel.GetOwnerWindow   = () => this;
+            DataContext                = ViewModel;
 
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Opacity = 0;
@@ -50,16 +51,20 @@ namespace ProjectSetup.UI
             dicts.Add(new ResourceDictionary { Source = newUri });
         }
 
-        #region Window chrome
+        #region Window chrome / resize
+
+        private void TitleBar_Loaded(object sender, RoutedEventArgs e) { }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
             => _windowResizer.ResizeWindow(e);
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e) { }
 
-        private void TitleBar_Loaded(object sender, RoutedEventArgs e) { }
-
-        private void Edge_MouseEnter(object sender, MouseEventArgs e) { }
+        private void LeftEdge_MouseEnter(object sender, MouseEventArgs e)           => Mouse.OverrideCursor = Cursors.SizeWE;
+        private void RightEdge_MouseEnter(object sender, MouseEventArgs e)          => Mouse.OverrideCursor = Cursors.SizeWE;
+        private void BottomEdge_MouseEnter(object sender, MouseEventArgs e)         => Mouse.OverrideCursor = Cursors.SizeNS;
+        private void BottomLeftCorner_MouseEnter(object sender, MouseEventArgs e)   => Mouse.OverrideCursor = Cursors.SizeNESW;
+        private void BottomRightCorner_MouseEnter(object sender, MouseEventArgs e)  => Mouse.OverrideCursor = Cursors.SizeNWSE;
         private void Edge_MouseLeave(object sender, MouseEventArgs e)
         {
             if (!_windowResizer.IsResizing)

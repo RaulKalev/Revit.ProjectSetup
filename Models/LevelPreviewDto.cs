@@ -15,9 +15,9 @@ namespace ProjectSetup.Models
         public LevelAction Action           { get; set; }
         public string      ActionDisplay    => Action switch
         {
-            LevelAction.RenameExisting => "Rename existing",
-            LevelAction.CreateNew      => "Create new",
-            LevelAction.DeleteExisting => "Delete",
+            LevelAction.RenameExisting => "Nimeta ümber",
+            LevelAction.CreateNew      => "Loo uus",
+            LevelAction.DeleteExisting => "Kustuta",
             _                          => ""
         };
     }

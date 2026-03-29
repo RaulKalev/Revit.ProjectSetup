@@ -41,7 +41,11 @@
 
   <ItemGroup>
     <EmbeddedResource Remove="Assets\ProjectSetup.tiff" />
+    <EmbeddedResource Remove="Assets\Dark - Project Setup.tiff" />
+    <EmbeddedResource Remove="Assets\Light - Project Setup.tiff" />
     <Resource Include="Assets\ProjectSetup.tiff" />
+    <Resource Include="Assets\Dark - Project Setup.tiff" />
+    <Resource Include="Assets\Light - Project Setup.tiff" />
   </ItemGroup>
 
 </Project>
