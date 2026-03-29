@@ -545,14 +545,14 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Vaadete loomine"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Baas vaadete loomine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="View → Plan Views → Floor Plan. Vali värskelt loodud Levelid → OK."/>
+                                                Text="Loob Floor Plan vaated k&#x00F5;ikidele tasanditele. Nimetab vaated kujul 00_Level Name ja m&#x00E4;&#x00E4;rab Kaust 1 = Baas plaanid."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
-                                                    ToolTip="Coming soon"
-                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding CreateBaseViewsCommand}"/>
                                             <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
                                                     Style="{StaticResource CustomActionButtonStyle}"
                                                     Command="{Binding ToggleStepDoneCommand}">

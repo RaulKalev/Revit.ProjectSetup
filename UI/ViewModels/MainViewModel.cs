@@ -1,7 +1,9 @@
 ﻿using ProjectSetup.Services.Revit;
+using ProjectSetup.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProjectSetup.UI.ViewModels
@@ -60,6 +62,9 @@ namespace ProjectSetup.UI.ViewModels
         // ── Levels commands ───────────────────────────────────────────────────
         public ICommand CreateLevelsCommand { get; }
 
+        // ── Base Views commands ───────────────────────────────────────────────
+        public ICommand CreateBaseViewsCommand { get; }
+
         // ── IFC Linking commands ──────────────────────────────────────────────
         public ICommand LinkIfcFilesCommand { get; }
 
@@ -74,6 +79,12 @@ namespace ProjectSetup.UI.ViewModels
         public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
         /// <summary>Returns a save-file path chosen by the user, or null if cancelled.</summary>
         public Func<string> RequestSaveFilePick          { get; set; }
+
+        /// <summary>Returns the owning Window for result dialogs.</summary>
+        public Func<Window> GetOwnerWindow               { get; set; }
+
+        /// <summary>Tracks the active theme so result dialogs match the main window.</summary>
+        public bool IsDarkMode                           { get; set; } = true;
 
         public MainViewModel(RevitExternalEventService eventService)
         {
@@ -97,6 +108,8 @@ namespace ProjectSetup.UI.ViewModels
                 OpenCreateLevelsWindowRequest?.Invoke();
                 MarkStepDone(5);
             });
+
+            CreateBaseViewsCommand = new RelayCommand(_ => ExecuteCreateBaseViews());
 
             LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
 
@@ -163,6 +176,47 @@ namespace ProjectSetup.UI.ViewModels
                 SetStatus(msg);
                 if (!msg.StartsWith("Save failed", StringComparison.OrdinalIgnoreCase))
                     MarkStepDone(3);
+            }));
+        }
+
+        private void ExecuteCreateBaseViews()
+        {
+            SetStatus("Creating base views\u2026");
+            IsBusy = true;
+            _eventService.Raise(new CreateBaseViewsRequest(result =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (result.ErrorMessage != null)
+                    {
+                        SetStatus(result.ErrorMessage);
+                        DialogWindow.Show(
+                            owner     : GetOwnerWindow?.Invoke(),
+                            title     : "Baas vaadete loomine",
+                            message   : result.ErrorMessage,
+                            iconKind  : "AlertCircleOutline",
+                            iconColor : "#f0a040",
+                            isDarkMode: IsDarkMode);
+                        return;
+                    }
+
+                    var parts = new List<string>();
+                    if (result.Created > 0) parts.Add($"Loodud: {result.Created}");
+                    if (result.Renamed > 0) parts.Add($"Nimetatud \u00fcmber: {result.Renamed}");
+                    var summary = parts.Count > 0 ? string.Join(", ", parts) + "." : "Muudatusi ei tehtud.";
+                    SetStatus(summary);
+
+                    DialogWindow.Show(
+                        owner       : GetOwnerWindow?.Invoke(),
+                        title       : "Baas vaadete loomine",
+                        message     : summary,
+                        detailItems : result.Messages.Count > 0 ? result.Messages : null,
+                        iconKind    : "CheckCircleOutline",
+                        iconColor   : "#70babc",
+                        isDarkMode  : IsDarkMode);
+
+                    MarkStepDone(6);
+                });
             }));
         }
 

@@ -48,6 +48,8 @@ namespace ProjectSetup.UI
             ViewModel.RequestFolderPick              = PickFolder;
             ViewModel.OpenLinkIfcWindowRequest       = OpenLinkIfcWindow;
             ViewModel.RequestSaveFilePick            = PickSaveFilePath;
+            ViewModel.GetOwnerWindow                 = () => this;
+            ViewModel.IsDarkMode                     = _isDarkMode;
 
             ThemeToggleButton.IsChecked = _isDarkMode;
 
@@ -129,6 +131,7 @@ namespace ProjectSetup.UI
         private void ToggleTheme_Click(object sender, RoutedEventArgs e)
         {
             _isDarkMode = !_isDarkMode;
+            ViewModel.IsDarkMode = _isDarkMode;
             SwapTheme(_isDarkMode);
             var settings = _settingsService.Load();
             settings.IsDarkMode = _isDarkMode;
