@@ -209,122 +209,7 @@
 
                                 <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="PROJEKTI SEADISTAMINE — TÖÖVOOG"/>
 
-                                <!-- ═══ Step 1: Käivita Revit ═══ -->
-                                <Border>
-                                    <Border.Style>
-                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsStep1Done}" Value="True">
-                                                    <Setter Property="Background" Value="#0A4CAF50"/>
-                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0">
-                                            <Border.Style>
-                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsStep1Done}" Value="True">
-                                                            <Setter Property="Background" Value="#FF4CAF50"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <Grid>
-                                                <TextBlock Text="1" FontSize="12" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep1Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep1Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            </Grid>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="1. Käivita Autodesk Revit 2026"/>
-                                            <TextBlock Style="{StaticResource ActionDescStyle}" Text="Ava Revit 2026 rakendus."/>
-                                            <TextBlock Foreground="#6670babc" FontSize="10" FontStyle="Italic" Margin="0,2,0,0" Text="Teeb kasutaja käsitsi"/>
-                                        </StackPanel>
-                                        <Button Grid.Column="2" Width="36" Height="36" VerticalAlignment="Center"
-                                                ToolTip="Märgi tehtuks / tühjenda"
-                                                Style="{StaticResource CustomActionButtonStyle}"
-                                                Command="{Binding ToggleStepDoneCommand}">
-                                            <Button.CommandParameter><sys:Int32>1</sys:Int32></Button.CommandParameter>
-                                            <Grid>
-                                                <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
-                                                    Visibility="{Binding IsStep1Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
-                                                    Visibility="{Binding IsStep1Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            </Grid>
-                                        </Button>
-                                    </Grid>
-                                </Border>
-
-                                <!-- ═══ Step 2: New Project ═══ -->
-                                <Border>
-                                    <Border.Style>
-                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsStep2Done}" Value="True">
-                                                    <Setter Property="Background" Value="#0A4CAF50"/>
-                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0">
-                                            <Border.Style>
-                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsStep2Done}" Value="True">
-                                                            <Setter Property="Background" Value="#FF4CAF50"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <Grid>
-                                                <TextBlock Text="2" FontSize="12" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep2Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Visibility="{Binding IsStep2Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            </Grid>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="2. File → New → Project"/>
-                                            <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Loo uus projekt EULE Template 2.0 põhjal.&#x0a;(EULE Dropbox › 0_EULE Team folder › 02_EULE REVIT TEMPLATE › 2.0 › EULE Template 2.0.rte)"/>
-                                            <TextBlock Foreground="#6670babc" FontSize="10" FontStyle="Italic" Margin="0,2,0,0" Text="Teeb kasutaja käsitsi"/>
-                                        </StackPanel>
-                                        <Button Grid.Column="2" Width="36" Height="36" VerticalAlignment="Center"
-                                                ToolTip="Märgi tehtuks / tühjenda"
-                                                Style="{StaticResource CustomActionButtonStyle}"
-                                                Command="{Binding ToggleStepDoneCommand}">
-                                            <Button.CommandParameter><sys:Int32>2</sys:Int32></Button.CommandParameter>
-                                            <Grid>
-                                                <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
-                                                    Visibility="{Binding IsStep2Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                                <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
-                                                    Visibility="{Binding IsStep2Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            </Grid>
-                                        </Button>
-                                    </Grid>
-                                </Border>
-
-                                <!-- ═══ Step 3: Save As ═══ -->
+                                <!-- ═══ Step 1: Save As ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -353,7 +238,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="3" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="1" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep3Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -362,7 +247,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="3. File → Save As → Project"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="1. File → Save As → Project"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Salvesta õige nimetusega projekti kausta.&#x0a;nt. __FAILIVAHETUS\0018_Lennuradari 40\4_EN\02_PP\Revit\LRT40_EN.rvt"/>
                                         </StackPanel>
@@ -385,7 +270,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 4: Link IFC ═══ -->
+                                <!-- ═══ Step 2: Link IFC ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -414,7 +299,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="4" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="2" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep4Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -423,7 +308,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="4. Mudelite linkimine (Link IFC)"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="2. Mudelite linkimine (Link IFC)"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Lingi IFC failid aktiivsesse projekti. Iga lingitud mudel kinnistatakse automaatselt. Kontrolli, et lingitud mudelid on lukus (Pinned)."/>
                                         </StackPanel>
@@ -446,7 +331,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 5: Create Levels ═══ -->
+                                <!-- ═══ Step 3: Create Levels ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -475,7 +360,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="5" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="3" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep5Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -484,7 +369,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="5. Tasandite (Levels) seadistamine"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="3. Tasandite (Levels) seadistamine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Kopeeri vajalikud Levelid olemasolevast Levelist. Nimeta Levelid ja määra kõrgused vastavalt BIM rakenduskavale."/>
                                         </StackPanel>
@@ -507,7 +392,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 6: Create Views ═══ -->
+                                <!-- ═══ Step 4: Create Views ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -536,7 +421,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="6" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="4" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep6Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -545,7 +430,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Baas vaadete loomine"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="4. Baas vaadete loomine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Loob Floor Plan vaated k&#x00F5;ikidele tasanditele. Nimetab vaated kujul 00_Level Name ja m&#x00E4;&#x00E4;rab Kaust 1 = Baas plaanid."/>
                                         </StackPanel>
@@ -568,7 +453,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 7: View Templates ═══ -->
+                                <!-- ═══ Step 5: DWG lisamine ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -597,7 +482,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="7" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="5" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep7Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -606,7 +491,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. DWG lisamine vaadetele"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="5. DWG lisamine vaadetele"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Vali kaust, kus asuvad DWG failid. Failid lingitakse automaatselt vastavatele Floor Plan vaadetele ja kinnistatakse."/>
                                         </StackPanel>
@@ -629,7 +514,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 8: Link DWG ═══ -->
+                                <!-- ═══ Step 6: View Template ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -658,7 +543,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="8" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="6" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep8Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -667,7 +552,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="8. Määra View Template"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Määra View Template"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Vali vaated Project Browserist ja määra neile vastav View Template (EL_Jõud, EL_Valgus, jne.). Kasuta Shift/Ctrl mitme vaate korraga valimiseks."/>
                                         </StackPanel>
@@ -690,7 +575,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 9: Place Reeper ═══ -->
+                                <!-- ═══ Step 7: Place Reeper ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -719,7 +604,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="9" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="7" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep9Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -728,7 +613,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="9. Paigalda Reeper"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. Paigalda Reeper"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Paigalda reeper lähtudes teiste eriosade reeperite asukohtadest või BIM rakenduskavas kirjeldatud kohta. Tavaliselt telgede A ja 0 ristumiskoht."/>
                                         </StackPanel>
@@ -751,7 +636,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- ═══ Step 10: Load Families ═══ -->
+                                <!-- ═══ Step 8: Load Families ═══ -->
                                 <Border>
                                     <Border.Style>
                                         <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
@@ -780,7 +665,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <TextBlock Text="10" FontSize="11" FontWeight="Bold" Foreground="White"
+                                                <TextBlock Text="8" FontSize="12" FontWeight="Bold" Foreground="White"
                                                            HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Visibility="{Binding IsStep10Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                 <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
@@ -789,7 +674,7 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="10. Lae sisse perekonnad"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="8. Lae sisse perekonnad"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
                                                 Text="Ava Content Catalogue. Kasuta searchi, et Content Catalogue'st asju paremini leida. Võid teha ka projekti ajal, tulenevalt vajadusest."/>
                                         </StackPanel>
