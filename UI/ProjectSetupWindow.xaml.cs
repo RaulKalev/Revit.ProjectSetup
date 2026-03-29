@@ -47,6 +47,7 @@ namespace ProjectSetup.UI
             ViewModel.OpenCreateLevelsWindowRequest  = OpenCreateLevelsWindow;
             ViewModel.RequestFolderPick              = PickFolder;
             ViewModel.OpenLinkIfcWindowRequest       = OpenLinkIfcWindow;
+            ViewModel.OpenLinkDwgWindowRequest       = OpenLinkDwgWindow;
             ViewModel.RequestSaveFilePick            = PickSaveFilePath;
             ViewModel.GetOwnerWindow                 = () => this;
             ViewModel.IsDarkMode                     = _isDarkMode;
@@ -111,6 +112,13 @@ namespace ProjectSetup.UI
         private void OpenLinkIfcWindow(List<string> paths)
         {
             var win = new LinkIfcWindow(paths, _externalEventService, _isDarkMode);
+            win.Topmost = true;
+            win.Show();
+        }
+
+        private void OpenLinkDwgWindow(List<string> paths)
+        {
+            var win = new LinkDwgWindow(paths, _externalEventService, _isDarkMode);
             win.Topmost = true;
             win.Show();
         }

@@ -606,13 +606,13 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. Määra View Template"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. DWG lisamine vaadetele"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Vali vaated Project Browserist ja määra neile vastav View Template (EL_Jõud, EL_Valgus, jne.). Kasuta Shift/Ctrl mitme vaate korraga valimiseks."/>
+                                                Text="Vali kaust, kus asuvad DWG failid. Failid lingitakse automaatselt vastavatele Floor Plan vaadetele ja kinnistatakse."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
-                                                    ToolTip="Coming soon"
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0"
+                                                    Command="{Binding LinkDwgFilesCommand}"
                                                     Style="{StaticResource CustomActionButtonStyle}"/>
                                             <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
                                                     Style="{StaticResource CustomActionButtonStyle}"
@@ -667,9 +667,9 @@
                                             </Grid>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="8. DWG lisamine vaadetele"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="8. Määra View Template"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Kasuta juhendit DWG Lisamine vaatele. Kontrolli, et lingitud DWG-d on lukus (Pinned)."/>
+                                                Text="Vali vaated Project Browserist ja määra neile vastav View Template (EL_Jõud, EL_Valgus, jne.). Kasuta Shift/Ctrl mitme vaate korraga valimiseks."/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"

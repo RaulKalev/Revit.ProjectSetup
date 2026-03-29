@@ -68,6 +68,9 @@ namespace ProjectSetup.UI.ViewModels
         // ── IFC Linking commands ──────────────────────────────────────────────
         public ICommand LinkIfcFilesCommand { get; }
 
+        // ── DWG Linking commands ─────────────────────────────────────────────
+        public ICommand LinkDwgFilesCommand { get; }
+
         // ── Step progress toggle ──────────────────────────────────────────────
         public ICommand ToggleStepDoneCommand { get; }
 
@@ -77,6 +80,7 @@ namespace ProjectSetup.UI.ViewModels
         public Action OpenCreateLevelsWindowRequest      { get; set; }
         public Func<string> RequestFolderPick            { get; set; }
         public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
+        public Action<List<string>> OpenLinkDwgWindowRequest { get; set; }
         /// <summary>Returns a save-file path chosen by the user, or null if cancelled.</summary>
         public Func<string> RequestSaveFilePick          { get; set; }
 
@@ -112,6 +116,7 @@ namespace ProjectSetup.UI.ViewModels
             CreateBaseViewsCommand = new RelayCommand(_ => ExecuteCreateBaseViews());
 
             LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
+            LinkDwgFilesCommand  = new RelayCommand(_ => PickFolderAndLinkDwg());
 
             ToggleStepDoneCommand = new RelayCommand(p =>
             {
@@ -234,6 +239,22 @@ namespace ProjectSetup.UI.ViewModels
 
             OpenLinkIfcWindowRequest?.Invoke(files);
             MarkStepDone(4);
+        }
+
+        private void PickFolderAndLinkDwg()
+        {
+            var folder = RequestFolderPick?.Invoke();
+            if (string.IsNullOrEmpty(folder)) return;
+
+            var files = new List<string>(Directory.GetFiles(folder, "*.dwg", SearchOption.TopDirectoryOnly));
+            if (files.Count == 0)
+            {
+                SetStatus("DWG faile valitud kaustas ei leitud.");
+                return;
+            }
+
+            OpenLinkDwgWindowRequest?.Invoke(files);
+            MarkStepDone(7);
         }
 
         private void RaiseRequest(IExternalEventRequest request)
