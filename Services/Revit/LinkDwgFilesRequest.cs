@@ -120,12 +120,11 @@ namespace ProjectSetup.Services.Revit
                     if (originalView != null) uidoc.ActiveView = originalView;
                     if (openedViewIds.Count > 0)
                     {
-                        // CloseViewsAndMoveToView is available in Revit 2024+.
-                        // We invoke via reflection so this compiles against older SDK stubs.
-                        var closeMethod = typeof(UIDocument)
-                            .GetMethods()
-                            .FirstOrDefault(m => m.Name == "CloseViewsAndMoveToView");
-                        closeMethod?.Invoke(uidoc, new object[] { openedViewIds, originalView });
+                        foreach (var uiView in uidoc.GetOpenUIViews())
+                        {
+                            if (openedViewIds.Contains(uiView.ViewId))
+                                uiView.Close();
+                        }
                     }
                 }
                 catch { /* ignore if views are no longer valid */ }
