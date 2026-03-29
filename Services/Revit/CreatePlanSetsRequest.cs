@@ -91,8 +91,15 @@ namespace ProjectSetup.Services.Revit
                     .Where(v => v.IsTemplate)
                     .ToDictionary(v => v.Name, v => v.Id, StringComparer.OrdinalIgnoreCase);
 
+                // Collect RevitLinkType IDs (the type, not instance — matches V/G Revit Links tab rows)
+                var revitLinkTypeIds = new FilteredElementCollector(doc)
+                    .OfClass(typeof(RevitLinkInstance))
+                    .Cast<RevitLinkInstance>()
+                    .Select(inst => inst.GetTypeId())
+                    .Distinct()
+                    .ToList();
+
                 var modifiedTemplates = new HashSet<ElementId>();
-                var rvtLinksCatId = new ElementId(BuiltInCategory.OST_RvtLinks);
 
                 using var tg = new TransactionGroup(doc, "Create Plan Sets");
                 tg.Start();
@@ -135,14 +142,24 @@ namespace ProjectSetup.Services.Revit
                             {
                                 newView.ViewTemplateId = templateId;
 
-                                // Turn off the Revit Links category visibility in the template (once per template)
+                                // Turn off each Revit link's V/G visibility checkbox in the template (once per template)
                                 if (!modifiedTemplates.Contains(templateId))
                                 {
                                     var templateView = doc.GetElement(templateId) as View;
-                                    if (templateView != null && !templateView.GetCategoryHidden(rvtLinksCatId))
+                                    if (templateView != null)
                                     {
-                                        templateView.SetCategoryHidden(rvtLinksCatId, true);
-                                        result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': Revit Links kategooria peidetud");
+                                        int hiddenCount = 0;
+                                        foreach (var typeId in revitLinkTypeIds)
+                                        {
+                                            if (templateView.CanCategoryBeHidden(typeId) &&
+                                                !templateView.GetCategoryHidden(typeId))
+                                            {
+                                                templateView.SetCategoryHidden(typeId, true);
+                                                hiddenCount++;
+                                            }
+                                        }
+                                        if (hiddenCount > 0)
+                                            result.Messages.Add($"   \u2193 Vaate mall '{category.ViewTemplateName}': {hiddenCount} Revit link(i) peidetud");
                                     }
                                     modifiedTemplates.Add(templateId);
                                 }
