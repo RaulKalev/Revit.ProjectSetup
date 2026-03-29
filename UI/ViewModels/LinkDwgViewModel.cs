@@ -157,7 +157,7 @@ namespace ProjectSetup.UI.ViewModels
             if (mappings.Count == 0) return;
 
             IsLinking     = true;
-            StatusMessage = $"Lingimine {mappings.Count} DWG faili…";
+            StatusMessage = $"Linkimine {mappings.Count} DWG faili…";
 
             _eventService.Raise(new LinkDwgFilesRequest(mappings, result =>
             {
@@ -185,11 +185,11 @@ namespace ProjectSetup.UI.ViewModels
 
                     string summaryMsg = result.Failed.Count == 0
                         ? $"Edukalt lingitud {result.Linked.Count} DWG fail(i) ja kinnitatud."
-                        : "Lingimine lõpetatud. Vaata üksikasju allpool.";
+                        : "Linkimine lõpetatud. Vaata üksikasju allpool.";
 
                     DialogWindow.Show(
                         owner       : GetOwnerWindow?.Invoke(),
-                        title       : "DWG lingimine lõpetatud",
+                        title       : "DWG linkimine lõpetatud",
                         message     : summaryMsg,
                         buttons     : new List<DialogButton> { new DialogButton("OK", "ok", isDefault: true) },
                         iconKind    : result.Failed.Count > 0 ? "AlertCircleOutline" : "CheckCircleOutline",

@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ProjectSetup.Services.Revit
 {
@@ -51,6 +52,7 @@ namespace ProjectSetup.Services.Revit
 
                 // Remember the original active view so we can restore it afterwards.
                 var originalView = uidoc.ActiveView;
+                var openedViewIds = new List<ElementId>();
 
                 var options = new DWGImportOptions
                 {
@@ -81,7 +83,10 @@ namespace ProjectSetup.Services.Revit
                         // Revit requires the target view to be active for "current view only"
                         // to take effect — passing the view parameter alone is not sufficient.
                         if (uidoc.ActiveView?.Id != targetView.Id)
+                        {
+                            openedViewIds.Add(targetView.Id);
                             uidoc.ActiveView = targetView;
+                        }
 
                         using var tx = new Transaction(doc, $"Link DWG: {displayName}");
                         tx.Start();
@@ -109,9 +114,21 @@ namespace ProjectSetup.Services.Revit
 
                 tg.Assimilate();
 
-                // Restore the original active view (best-effort).
-                try { if (originalView != null) uidoc.ActiveView = originalView; }
-                catch { /* ignore if the original view is no longer valid */ }
+                // Restore the original active view, then close any floor plan tabs opened during linking.
+                try
+                {
+                    if (originalView != null) uidoc.ActiveView = originalView;
+                    if (openedViewIds.Count > 0)
+                    {
+                        // CloseViewsAndMoveToView is available in Revit 2024+.
+                        // We invoke via reflection so this compiles against older SDK stubs.
+                        var closeMethod = typeof(UIDocument)
+                            .GetMethods()
+                            .FirstOrDefault(m => m.Name == "CloseViewsAndMoveToView");
+                        closeMethod?.Invoke(uidoc, new object[] { openedViewIds, originalView });
+                    }
+                }
+                catch { /* ignore if views are no longer valid */ }
 
                 _onComplete?.Invoke(result);
             }

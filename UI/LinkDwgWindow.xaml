@@ -184,7 +184,7 @@
                                 Background="Transparent"
                                 BorderThickness="0"/>
                             <TextBlock
-                                Text="Lingimine…"
+                                Text="Linkimine…"
                                 HorizontalAlignment="Center"
                                 Foreground="{DynamicResource ForegroundBrush}"
                                 FontSize="13"
