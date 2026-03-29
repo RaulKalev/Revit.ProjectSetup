@@ -47,6 +47,7 @@ namespace ProjectSetup.UI
             ViewModel.OpenCreateLevelsWindowRequest  = OpenCreateLevelsWindow;
             ViewModel.RequestFolderPick              = PickFolder;
             ViewModel.OpenLinkIfcWindowRequest       = OpenLinkIfcWindow;
+            ViewModel.RequestSaveFilePick            = PickSaveFilePath;
 
             ThemeToggleButton.IsChecked = _isDarkMode;
 
@@ -109,6 +110,17 @@ namespace ProjectSetup.UI
         {
             var win = new LinkIfcWindow(paths, _externalEventService, _isDarkMode);
             win.Show();
+        }
+
+        private string PickSaveFilePath()
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Title      = "Save Revit Project As",
+                Filter     = "Revit Project (*.rvt)|*.rvt",
+                DefaultExt = ".rvt"
+            };
+            return dlg.ShowDialog() == true ? dlg.FileName : null;
         }
 
         #region Theme

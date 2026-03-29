@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:av="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ui="clr-namespace:ProjectSetup.UI"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Project Setup"
@@ -31,6 +32,7 @@
 
             <ui:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <ui:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <ui:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
             <ui:NullToCollapsedConverter x:Key="NullToCollapsedConverter"/>
 
             <!-- Tab item style matching template -->
@@ -99,6 +101,27 @@
             <Style x:Key="InfoCardStyle" TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
                 <Setter Property="BorderBrush" Value="#3370babc"/>
                 <Setter Property="Background" Value="#0A70babc"/>
+            </Style>
+
+            <!-- Done card: green left accent -->
+            <Style x:Key="DoneCardStyle" TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                <Setter Property="Background" Value="#0A4CAF50"/>
+            </Style>
+
+            <!-- Step number badge (circle) -->
+            <Style x:Key="StepBadgeStyle" TargetType="Border">
+                <Setter Property="Width" Value="28"/>
+                <Setter Property="Height" Value="28"/>
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="Background" Value="#3370babc"/>
+                <Setter Property="Margin" Value="0,0,14,0"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <!-- Done badge: filled green -->
+            <Style x:Key="DoneBadgeStyle" TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                <Setter Property="Background" Value="#FF4CAF50"/>
             </Style>
 
         </ResourceDictionary>
@@ -181,136 +204,611 @@
 
                     <!-- ── Tab 1: Project Setup ───────── -->
                     <TabItem Header="Project Setup">
-                        <ScrollViewer
-                            VerticalScrollBarVisibility="Auto"
-                            HorizontalScrollBarVisibility="Disabled"
-                            Margin="0,8,0,0">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,8,0,0">
                             <StackPanel Margin="0,0,6,8">
 
-                                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="PROJECT SETUP"/>
+                                <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="PROJEKTI SEADISTAMINE — TÖÖVOOG"/>
 
-                                <!-- Project Information -->
-                                <Border Style="{StaticResource ActionCardStyle}">
+                                <!-- ═══ Step 1: Käivita Revit ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep1Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                            Kind="ClipboardTextOutline"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep1Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="1" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep1Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep1Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Project Information"/>
-                                            <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Open the Project Information dialog to review or set project name, number, client, and other parameters."/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="1. Käivita Autodesk Revit 2026"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}" Text="Ava Revit 2026 rakendus."/>
+                                            <TextBlock Foreground="#6670babc" FontSize="10" FontStyle="Italic" Margin="0,2,0,0" Text="Teeb kasutaja käsitsi"/>
                                         </StackPanel>
-                                        <Button Grid.Column="2" Content="Open" Width="72"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource CustomActionButtonStyle}"
-                                            Command="{Binding OpenProjectInfoCommand}"/>
+                                        <Button Grid.Column="2" Width="36" Height="36" VerticalAlignment="Center"
+                                                ToolTip="Märgi tehtuks / tühjenda"
+                                                Style="{StaticResource CustomActionButtonStyle}"
+                                                Command="{Binding ToggleStepDoneCommand}">
+                                            <Button.CommandParameter><sys:Int32>1</sys:Int32></Button.CommandParameter>
+                                            <Grid>
+                                                <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                    Visibility="{Binding IsStep1Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                    Visibility="{Binding IsStep1Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Button>
                                     </Grid>
                                 </Border>
 
-                                <!-- Create Levels from Link -->
-                                <Border Style="{StaticResource ActionCardStyle}">
+                                <!-- ═══ Step 2: New Project ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep2Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                            Kind="LayersTriple"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep2Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="2" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep2Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep2Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Create Levels"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="2. File → New → Project"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Create and rename project levels from a linked model (IFC or RVT). Existing template levels are reused."/>
+                                                Text="Loo uus projekt EULE Template 2.0 põhjal.&#x0a;(EULE Dropbox › 0_EULE Team folder › 02_EULE REVIT TEMPLATE › 2.0 › EULE Template 2.0.rte)"/>
+                                            <TextBlock Foreground="#6670babc" FontSize="10" FontStyle="Italic" Margin="0,2,0,0" Text="Teeb kasutaja käsitsi"/>
                                         </StackPanel>
-                                        <Button Grid.Column="2" Content="Open" Width="72"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource CustomActionButtonStyle}"
-                                            Command="{Binding CreateLevelsCommand}"/>
+                                        <Button Grid.Column="2" Width="36" Height="36" VerticalAlignment="Center"
+                                                ToolTip="Märgi tehtuks / tühjenda"
+                                                Style="{StaticResource CustomActionButtonStyle}"
+                                                Command="{Binding ToggleStepDoneCommand}">
+                                            <Button.CommandParameter><sys:Int32>2</sys:Int32></Button.CommandParameter>
+                                            <Grid>
+                                                <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                    Visibility="{Binding IsStep2Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                    Visibility="{Binding IsStep2Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Button>
                                     </Grid>
                                 </Border>
 
-                                <!-- Browser Organization -->
-                                <Border Style="{StaticResource ActionCardStyle}">
+                                <!-- ═══ Step 3: Save As ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep3Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                            Kind="SitemapOutline"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep3Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="3" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep3Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep3Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Browser Organization"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="3. File → Save As → Project"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Apply the standard browser organization scheme to the project views and sheets."/>
+                                                Text="Salvesta õige nimetusega projekti kausta.&#x0a;nt. __FAILIVAHETUS\0018_Lennuradari 40\4_EN\02_PP\Revit\LRT40_EN.rvt"/>
                                         </StackPanel>
-                                        <Button Grid.Column="2" Content="Run" Width="72"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource CustomActionButtonStyle}"
-                                            Command="{Binding ApplyBrowserOrganizationCommand}"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Save As" Width="72" Margin="0,0,6,0"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding SaveAsCommand}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>3</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep3Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep3Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Required Content Check -->
-                                <Border Style="{StaticResource ActionCardStyle}">
+                                <!-- ═══ Step 4: Link IFC ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep4Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                            Kind="CheckboxMarkedCircleOutline"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep4Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="4" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep4Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep4Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Required Content Check"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="4. Mudelite linkimine (Link IFC)"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Verify that required families and shared content are loaded into the active project."/>
+                                                Text="Lingi IFC failid aktiivsesse projekti. Iga lingitud mudel kinnistatakse automaatselt. Kontrolli, et lingitud mudelid on lukus (Pinned)."/>
                                         </StackPanel>
-                                        <Button Grid.Column="2" Content="Run" Width="72"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource CustomActionButtonStyle}"
-                                            Command="{Binding CheckRequiredContentCommand}"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding LinkIfcFilesCommand}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>4</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep4Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep4Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Link IFC Files -->
-                                <Border Style="{StaticResource ActionCardStyle}">
+                                <!-- ═══ Step 5: Create Levels ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep5Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                            Kind="LinkVariant"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep5Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="5" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep5Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep5Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Link IFC Files"/>
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="5. Tasandite (Levels) seadistamine"/>
                                             <TextBlock Style="{StaticResource ActionDescStyle}"
-                                                Text="Select a folder to link all IFC files into the active project. Each model is linked and pinned automatically."/>
+                                                Text="Kopeeri vajalikud Levelid olemasolevast Levelist. Nimeta Levelid ja määra kõrgused vastavalt BIM rakenduskavale."/>
                                         </StackPanel>
-                                        <Button Grid.Column="2" Content="Run" Width="72"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource CustomActionButtonStyle}"
-                                            Command="{Binding LinkIfcFilesCommand}"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Open" Width="72" Margin="0,0,6,0"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding CreateLevelsCommand}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>5</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep5Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep5Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ═══ Step 6: Create Views ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep6Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep6Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="6" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep6Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep6Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="6. Vaadete loomine"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="View → Plan Views → Floor Plan. Vali värskelt loodud Levelid → OK."/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
+                                                    ToolTip="Coming soon"
+                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>6</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep6Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep6Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ═══ Step 7: View Templates ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep7Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep7Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="7" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep7Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep7Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="7. Määra View Template"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Vali vaated Project Browserist ja määra neile vastav View Template (EL_Jõud, EL_Valgus, jne.). Kasuta Shift/Ctrl mitme vaate korraga valimiseks."/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
+                                                    ToolTip="Coming soon"
+                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>7</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep7Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep7Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ═══ Step 8: Link DWG ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep8Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep8Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="8" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep8Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep8Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="8. DWG lisamine vaadetele"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Kasuta juhendit DWG Lisamine vaatele. Kontrolli, et lingitud DWG-d on lukus (Pinned)."/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
+                                                    ToolTip="Coming soon"
+                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>8</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep8Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep8Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ═══ Step 9: Place Reeper ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep9Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep9Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="9" FontSize="12" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep9Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep9Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="9. Paigalda Reeper"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Paigalda reeper lähtudes teiste eriosade reeperite asukohtadest või BIM rakenduskavas kirjeldatud kohta. Tavaliselt telgede A ja 0 ristumiskoht."/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Run" Width="72" Margin="0,0,6,0" IsEnabled="False"
+                                                    ToolTip="Coming soon"
+                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>9</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep9Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep9Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ═══ Step 10: Load Families ═══ -->
+                                <Border>
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource ActionCardStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsStep10Done}" Value="True">
+                                                    <Setter Property="Background" Value="#0A4CAF50"/>
+                                                    <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource StepBadgeStyle}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsStep10Done}" Value="True">
+                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="10" FontSize="11" FontWeight="Bold" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep10Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="14" Height="14" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsStep10Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="10. Lae sisse perekonnad"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Ava Content Catalogue. Kasuta searchi, et Content Catalogue'st asju paremini leida. Võid teha ka projekti ajal, tulenevalt vajadusest."/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Open" Width="72" Margin="0,0,6,0" IsEnabled="False"
+                                                    ToolTip="Coming soon"
+                                                    Style="{StaticResource CustomActionButtonStyle}"/>
+                                            <Button Width="36" Height="36" ToolTip="Märgi tehtuks / tühjenda"
+                                                    Style="{StaticResource CustomActionButtonStyle}"
+                                                    Command="{Binding ToggleStepDoneCommand}">
+                                                <Button.CommandParameter><sys:Int32>10</sys:Int32></Button.CommandParameter>
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="18" Height="18" Foreground="{DynamicResource IconBrush}"
+                                                        Visibility="{Binding IsStep10Done, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    <materialDesign:PackIcon Kind="CheckCircle" Width="18" Height="18" Foreground="#FF4CAF50"
+                                                        Visibility="{Binding IsStep10Done, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
 

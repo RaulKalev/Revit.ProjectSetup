@@ -15,6 +15,20 @@ namespace ProjectSetup.UI.ViewModels
         private bool _isBusy;
         private string _statusMessage = "Ready";
 
+        // ── Step completion state stored in Extensible Storage ────────────────
+        private readonly HashSet<int> _completedSteps = new HashSet<int>();
+
+        private bool _isStep1Done;  public bool IsStep1Done  { get => _isStep1Done;  set => SetProperty(ref _isStep1Done,  value); }
+        private bool _isStep2Done;  public bool IsStep2Done  { get => _isStep2Done;  set => SetProperty(ref _isStep2Done,  value); }
+        private bool _isStep3Done;  public bool IsStep3Done  { get => _isStep3Done;  set => SetProperty(ref _isStep3Done,  value); }
+        private bool _isStep4Done;  public bool IsStep4Done  { get => _isStep4Done;  set => SetProperty(ref _isStep4Done,  value); }
+        private bool _isStep5Done;  public bool IsStep5Done  { get => _isStep5Done;  set => SetProperty(ref _isStep5Done,  value); }
+        private bool _isStep6Done;  public bool IsStep6Done  { get => _isStep6Done;  set => SetProperty(ref _isStep6Done,  value); }
+        private bool _isStep7Done;  public bool IsStep7Done  { get => _isStep7Done;  set => SetProperty(ref _isStep7Done,  value); }
+        private bool _isStep8Done;  public bool IsStep8Done  { get => _isStep8Done;  set => SetProperty(ref _isStep8Done,  value); }
+        private bool _isStep9Done;  public bool IsStep9Done  { get => _isStep9Done;  set => SetProperty(ref _isStep9Done,  value); }
+        private bool _isStep10Done; public bool IsStep10Done { get => _isStep10Done; set => SetProperty(ref _isStep10Done, value); }
+
         public bool IsBusy
         {
             get => _isBusy;
@@ -31,6 +45,7 @@ namespace ProjectSetup.UI.ViewModels
         public ICommand OpenProjectInfoCommand          { get; }
         public ICommand ApplyBrowserOrganizationCommand { get; }
         public ICommand CheckRequiredContentCommand     { get; }
+        public ICommand SaveAsCommand                   { get; }
 
         // ── Maintenance commands ──────────────────────────────────────────────
         public ICommand OpenPurgeUnusedCommand  { get; }
@@ -48,30 +63,17 @@ namespace ProjectSetup.UI.ViewModels
         // ── IFC Linking commands ──────────────────────────────────────────────
         public ICommand LinkIfcFilesCommand { get; }
 
-        /// <summary>
-        /// Wired up by ProjectSetupWindow to open the Transfer Standards browser window.
-        /// </summary>
-        public Action OpenTransferWindowRequest      { get; set; }
+        // ── Step progress toggle ──────────────────────────────────────────────
+        public ICommand ToggleStepDoneCommand { get; }
 
-        /// <summary>
-        /// Wired up by ProjectSetupWindow to open the Copy Elements browser window.
-        /// </summary>
-        public Action OpenCopyElementsWindowRequest { get; set; }
-
-        /// <summary>
-        /// Wired up by ProjectSetupWindow to open the Create Levels window.
-        /// </summary>
-        public Action OpenCreateLevelsWindowRequest { get; set; }
-
-        /// <summary>
-        /// Wired up by ProjectSetupWindow to show a folder picker and return the selected path, or null if cancelled.
-        /// </summary>
-        public Func<string> RequestFolderPick { get; set; }
-
-        /// <summary>
-        /// Wired up by ProjectSetupWindow to open the Link IFC preview window with the discovered file paths.
-        /// </summary>
+        // ── Delegates wired by ProjectSetupWindow ─────────────────────────────
+        public Action OpenTransferWindowRequest          { get; set; }
+        public Action OpenCopyElementsWindowRequest      { get; set; }
+        public Action OpenCreateLevelsWindowRequest      { get; set; }
+        public Func<string> RequestFolderPick            { get; set; }
         public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
+        /// <summary>Returns a save-file path chosen by the user, or null if cancelled.</summary>
+        public Func<string> RequestSaveFilePick          { get; set; }
 
         public MainViewModel(RevitExternalEventService eventService)
         {
@@ -80,6 +82,7 @@ namespace ProjectSetup.UI.ViewModels
             OpenProjectInfoCommand          = new RelayCommand(_ => RaiseRequest(new ProjectInformationRequest(SetStatus)));
             ApplyBrowserOrganizationCommand = new RelayCommand(_ => SetStatus("Browser Organization: coming in a future update."));
             CheckRequiredContentCommand     = new RelayCommand(_ => SetStatus("Required Content Check: coming in a future update."));
+            SaveAsCommand                   = new RelayCommand(_ => ExecuteSaveAs());
 
             OpenPurgeUnusedCommand  = new RelayCommand(_ => RaiseRequest(new PurgeUnusedRequest(SetStatus)));
             ReviewWarningsCommand   = new RelayCommand(_ => RaiseRequest(new ModelWarningsRequest(SetStatus)));
@@ -88,9 +91,79 @@ namespace ProjectSetup.UI.ViewModels
             TransferStandardsCommand = new RelayCommand(_ => OpenTransferWindowRequest?.Invoke());
             ApplyFromTemplateCommand  = new RelayCommand(_ => SetStatus("Apply from Template: coming in a future update."), _ => false);
             CopyElementsCommand       = new RelayCommand(_ => OpenCopyElementsWindowRequest?.Invoke());
-            CreateLevelsCommand       = new RelayCommand(_ => OpenCreateLevelsWindowRequest?.Invoke());
+
+            CreateLevelsCommand = new RelayCommand(_ =>
+            {
+                OpenCreateLevelsWindowRequest?.Invoke();
+                MarkStepDone(5);
+            });
 
             LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
+
+            ToggleStepDoneCommand = new RelayCommand(p =>
+            {
+                if (p is int step) ToggleStep(step);
+            });
+
+            // Read persisted progress from Extensible Storage on construction
+            _eventService.Raise(new ReadSetupProgressRequest(OnProgressLoaded));
+        }
+
+        // ── Step progress helpers ─────────────────────────────────────────────
+
+        private void OnProgressLoaded(HashSet<int> completed)
+        {
+            _completedSteps.Clear();
+            foreach (var n in completed) _completedSteps.Add(n);
+            ApplyStepBoolsFromSet();
+        }
+
+        private void ApplyStepBoolsFromSet()
+        {
+            IsStep1Done  = _completedSteps.Contains(1);
+            IsStep2Done  = _completedSteps.Contains(2);
+            IsStep3Done  = _completedSteps.Contains(3);
+            IsStep4Done  = _completedSteps.Contains(4);
+            IsStep5Done  = _completedSteps.Contains(5);
+            IsStep6Done  = _completedSteps.Contains(6);
+            IsStep7Done  = _completedSteps.Contains(7);
+            IsStep8Done  = _completedSteps.Contains(8);
+            IsStep9Done  = _completedSteps.Contains(9);
+            IsStep10Done = _completedSteps.Contains(10);
+        }
+
+        private void MarkStepDone(int step)
+        {
+            if (_completedSteps.Contains(step)) return;
+            _completedSteps.Add(step);
+            ApplyStepBoolsFromSet();
+            _eventService.Raise(new WriteSetupProgressRequest(_completedSteps, SetStatus));
+        }
+
+        private void ToggleStep(int step)
+        {
+            if (_completedSteps.Contains(step))
+                _completedSteps.Remove(step);
+            else
+                _completedSteps.Add(step);
+
+            ApplyStepBoolsFromSet();
+            _eventService.Raise(new WriteSetupProgressRequest(_completedSteps, SetStatus));
+        }
+
+        // ── Action helpers ────────────────────────────────────────────────────
+
+        private void ExecuteSaveAs()
+        {
+            var path = RequestSaveFilePick?.Invoke();
+            if (string.IsNullOrEmpty(path)) return;
+
+            RaiseRequest(new SaveAsRequest(path, msg =>
+            {
+                SetStatus(msg);
+                if (!msg.StartsWith("Save failed", StringComparison.OrdinalIgnoreCase))
+                    MarkStepDone(3);
+            }));
         }
 
         private void PickFolderAndLinkIfc()
@@ -106,6 +179,7 @@ namespace ProjectSetup.UI.ViewModels
             }
 
             OpenLinkIfcWindowRequest?.Invoke(files);
+            MarkStepDone(4);
         }
 
         private void RaiseRequest(IExternalEventRequest request)
@@ -115,7 +189,6 @@ namespace ProjectSetup.UI.ViewModels
             try
             {
                 _eventService.Raise(request);
-                // IsBusy is cleared once the external event callback runs SetStatus
             }
             catch (Exception ex)
             {
