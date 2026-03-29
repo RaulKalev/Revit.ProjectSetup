@@ -211,7 +211,8 @@
                                 Content="Clear All"
                                 Style="{StaticResource CustomActionButtonStyle}"
                                 Command="{Binding DeselectAllCommand}"
-                                Width="90" Height="32" FontSize="12"/>
+                                Width="90" Height="32" FontSize="12"
+                                Margin="0"/>
                         <Button Grid.Column="3"
                                 Content="{Binding LinkButtonLabel}"
                                 Style="{StaticResource CustomActionButtonStyle}"
@@ -222,6 +223,7 @@
                                 Content="Cancel"
                                 Style="{StaticResource CustomActionButtonStyle}"
                                 Width="80" Height="32" FontSize="12"
+                                Margin="0"
                                 Click="Cancel_Click"/>
                     </Grid>
                 </Grid>
