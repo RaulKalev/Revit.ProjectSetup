@@ -159,11 +159,9 @@
                                                 ItemsSource="{Binding DataContext.AvailableViews, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 SelectedItem="{Binding SelectedView, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                                 DisplayMemberPath="Name"
+                                                Style="{StaticResource DarkThemeComboBox}"
                                                 Margin="4,2"
                                                 VerticalAlignment="Center"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Foreground="{DynamicResource ForegroundBrush}"
                                                 FontSize="12"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
