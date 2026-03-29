@@ -30,6 +30,7 @@ namespace ProjectSetup.UI.ViewModels
         private bool _isStep8Done;  public bool IsStep8Done  { get => _isStep8Done;  set => SetProperty(ref _isStep8Done,  value); }
         private bool _isStep9Done;  public bool IsStep9Done  { get => _isStep9Done;  set => SetProperty(ref _isStep9Done,  value); }
         private bool _isStep10Done; public bool IsStep10Done { get => _isStep10Done; set => SetProperty(ref _isStep10Done, value); }
+        private bool _isStep11Done; public bool IsStep11Done { get => _isStep11Done; set => SetProperty(ref _isStep11Done, value); }
 
         public bool IsBusy
         {
@@ -71,6 +72,9 @@ namespace ProjectSetup.UI.ViewModels
         // ── DWG Linking commands ─────────────────────────────────────────────
         public ICommand LinkDwgFilesCommand { get; }
 
+        // ── Plan Sets commands ────────────────────────────────────────────────
+        public ICommand CreatePlanSetsCommand { get; }
+
         // ── Step progress toggle ──────────────────────────────────────────────
         public ICommand ToggleStepDoneCommand { get; }
 
@@ -81,6 +85,7 @@ namespace ProjectSetup.UI.ViewModels
         public Func<string> RequestFolderPick            { get; set; }
         public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
         public Action<List<string>> OpenLinkDwgWindowRequest { get; set; }
+        public Action OpenCreatePlanSetsWindowRequest { get; set; }
         /// <summary>Returns a save-file path chosen by the user, or null if cancelled.</summary>
         public Func<string> RequestSaveFilePick          { get; set; }
 
@@ -117,6 +122,7 @@ namespace ProjectSetup.UI.ViewModels
 
             LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
             LinkDwgFilesCommand  = new RelayCommand(_ => PickFolderAndLinkDwg());
+            CreatePlanSetsCommand = new RelayCommand(_ => OpenPlanSetsAndMark());
 
             ToggleStepDoneCommand = new RelayCommand(p =>
             {
@@ -148,6 +154,7 @@ namespace ProjectSetup.UI.ViewModels
             IsStep8Done  = _completedSteps.Contains(8);
             IsStep9Done  = _completedSteps.Contains(9);
             IsStep10Done = _completedSteps.Contains(10);
+            IsStep11Done = _completedSteps.Contains(11);
         }
 
         private void MarkStepDone(int step)
@@ -255,6 +262,12 @@ namespace ProjectSetup.UI.ViewModels
 
             OpenLinkDwgWindowRequest?.Invoke(files);
             MarkStepDone(7);
+        }
+
+        private void OpenPlanSetsAndMark()
+        {
+            OpenCreatePlanSetsWindowRequest?.Invoke();
+            MarkStepDone(11);
         }
 
         private void RaiseRequest(IExternalEventRequest request)
