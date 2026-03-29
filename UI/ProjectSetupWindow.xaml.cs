@@ -3,6 +3,7 @@ using ProjectSetup.Services;
 using ProjectSetup.Services.Revit;
 using ProjectSetup.UI.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -44,6 +45,8 @@ namespace ProjectSetup.UI
             ViewModel.OpenTransferWindowRequest      = OpenTransferStandardsWindow;
             ViewModel.OpenCopyElementsWindowRequest  = OpenCopyElementsWindow;
             ViewModel.OpenCreateLevelsWindowRequest  = OpenCreateLevelsWindow;
+            ViewModel.RequestFolderPick              = PickFolder;
+            ViewModel.OpenLinkIfcWindowRequest       = OpenLinkIfcWindow;
 
             ThemeToggleButton.IsChecked = _isDarkMode;
 
@@ -79,6 +82,32 @@ namespace ProjectSetup.UI
         private void OpenCreateLevelsWindow()
         {
             var win = new CreateLevelsWindow(_externalEventService, _isDarkMode);
+            win.Show();
+        }
+
+        private string PickFolder()
+        {
+#if NET8_0_OR_GREATER
+            var dlg = new Microsoft.Win32.OpenFolderDialog
+            {
+                Title = "Select folder containing IFC files"
+            };
+            return dlg.ShowDialog() == true ? dlg.FolderName : null;
+#else
+            using var dlg = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description     = "Select folder containing IFC files",
+                ShowNewFolderButton = false
+            };
+            return dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK
+                ? dlg.SelectedPath
+                : null;
+#endif
+        }
+
+        private void OpenLinkIfcWindow(List<string> paths)
+        {
+            var win = new LinkIfcWindow(paths, _externalEventService, _isDarkMode);
             win.Show();
         }
 

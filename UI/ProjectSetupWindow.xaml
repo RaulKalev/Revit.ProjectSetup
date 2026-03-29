@@ -289,6 +289,31 @@
                                     </Grid>
                                 </Border>
 
+                                <!-- Link IFC Files -->
+                                <Border Style="{StaticResource ActionCardStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <materialDesign:PackIcon Grid.Column="0"
+                                            Kind="LinkVariant"
+                                            Width="24" Height="24"
+                                            VerticalAlignment="Center"
+                                            Foreground="#70babc" Margin="0,0,14,0"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource ActionTitleStyle}" Text="Link IFC Files"/>
+                                            <TextBlock Style="{StaticResource ActionDescStyle}"
+                                                Text="Select a folder to link all IFC files into the active project. Each model is linked and pinned automatically."/>
+                                        </StackPanel>
+                                        <Button Grid.Column="2" Content="Run" Width="72"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource CustomActionButtonStyle}"
+                                            Command="{Binding LinkIfcFilesCommand}"/>
+                                    </Grid>
+                                </Border>
+
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>

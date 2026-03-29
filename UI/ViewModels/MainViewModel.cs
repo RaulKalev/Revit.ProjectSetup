@@ -1,5 +1,7 @@
 ﻿using ProjectSetup.Services.Revit;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Input;
 
 namespace ProjectSetup.UI.ViewModels
@@ -43,6 +45,9 @@ namespace ProjectSetup.UI.ViewModels
         // ── Levels commands ───────────────────────────────────────────────────
         public ICommand CreateLevelsCommand { get; }
 
+        // ── IFC Linking commands ──────────────────────────────────────────────
+        public ICommand LinkIfcFilesCommand { get; }
+
         /// <summary>
         /// Wired up by ProjectSetupWindow to open the Transfer Standards browser window.
         /// </summary>
@@ -57,6 +62,16 @@ namespace ProjectSetup.UI.ViewModels
         /// Wired up by ProjectSetupWindow to open the Create Levels window.
         /// </summary>
         public Action OpenCreateLevelsWindowRequest { get; set; }
+
+        /// <summary>
+        /// Wired up by ProjectSetupWindow to show a folder picker and return the selected path, or null if cancelled.
+        /// </summary>
+        public Func<string> RequestFolderPick { get; set; }
+
+        /// <summary>
+        /// Wired up by ProjectSetupWindow to open the Link IFC preview window with the discovered file paths.
+        /// </summary>
+        public Action<List<string>> OpenLinkIfcWindowRequest { get; set; }
 
         public MainViewModel(RevitExternalEventService eventService)
         {
@@ -74,6 +89,23 @@ namespace ProjectSetup.UI.ViewModels
             ApplyFromTemplateCommand  = new RelayCommand(_ => SetStatus("Apply from Template: coming in a future update."), _ => false);
             CopyElementsCommand       = new RelayCommand(_ => OpenCopyElementsWindowRequest?.Invoke());
             CreateLevelsCommand       = new RelayCommand(_ => OpenCreateLevelsWindowRequest?.Invoke());
+
+            LinkIfcFilesCommand = new RelayCommand(_ => PickFolderAndLinkIfc());
+        }
+
+        private void PickFolderAndLinkIfc()
+        {
+            var folder = RequestFolderPick?.Invoke();
+            if (string.IsNullOrEmpty(folder)) return;
+
+            var files = new List<string>(Directory.GetFiles(folder, "*.ifc", SearchOption.TopDirectoryOnly));
+            if (files.Count == 0)
+            {
+                SetStatus("No IFC files found in the selected folder.");
+                return;
+            }
+
+            OpenLinkIfcWindowRequest?.Invoke(files);
         }
 
         private void RaiseRequest(IExternalEventRequest request)

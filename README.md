@@ -20,6 +20,16 @@ A Revit plugin that provides a centralised hub for setting up, maintaining, and 
 | **Model Warnings** | Counts and summarises all current model warnings |
 | **Model Audit** | Pre-defined model quality checklist *(coming soon)* |
 
+### Link IFC Files
+Batch-link external IFC models into the active Revit project:
+
+- Pick a folder containing `.ifc` files
+- Preview all discovered files in a DataGrid with file names and sizes
+- **Select All / Clear All** helpers with checkbox selection
+- Files are linked one-by-one via `RevitLinkType.CreateFromIFC`
+- Each linked model is automatically **pinned** after placement
+- Summary dialog reports success / failure for every file
+
 ### Transfer Standards
 Browse and inspect standards from any open Revit document:
 
@@ -78,15 +88,16 @@ ProjectSetup/
 ├── App.cs                        # IExternalApplication — ribbon registration
 ├── Commands/
 │   └── ProjectSetupCommand.cs    # IExternalCommand — opens main window
-├── Models/                       # DTOs (SettingsModel, StandardsItemDto, …)
+├── Models/                       # DTOs (SettingsModel, StandardsItemDto, IfcFileItemDto, …)
 ├── Services/
 │   ├── Core/                     # SessionLogger, ILogger
-│   ├── Revit/                    # External event requests (API calls)
+│   ├── Revit/                    # External event requests (LinkIfcFilesRequest, …)
 │   └── SettingsService.cs        # JSON settings persistence
 └── UI/
     ├── Themes/                   # DarkTheme, LightTheme, ElementStyles
-    ├── ViewModels/               # MainViewModel, TransferStandardsViewModel
+    ├── ViewModels/               # MainViewModel, LinkIfcViewModel, TransferStandardsViewModel
     ├── ProjectSetupWindow.xaml   # Main three-tab window
+    ├── LinkIfcWindow.xaml        # IFC file selection & linking window
     ├── TransferStandardsWindow.xaml
     └── TitleBar.xaml             # Custom title bar user control
 ```
