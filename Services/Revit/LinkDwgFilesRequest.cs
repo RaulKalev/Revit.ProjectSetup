@@ -59,6 +59,7 @@ namespace ProjectSetup.Services.Revit
                     Unit              = ImportUnit.Default,
                     OrientToView      = false,
                     VisibleLayersOnly = false,
+                    ThisViewOnly      = true,
                 };
 
                 using var tg = new TransactionGroup(doc, "Link DWG Files");
